@@ -1,11 +1,8 @@
 package com.stylefeng.guns.rest.modular.cinema;
 
-<<<<<<< HEAD
-=======
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.stylefeng.guns.rest.cinema.CinemaService;
 import com.stylefeng.guns.rest.vo.BaseReqVo;
->>>>>>> 0e8ae5bbcdbf6a6e7e2898fd694c1ce25536346f
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,15 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("cinema")
 public class CinemaController {
-
-<<<<<<< HEAD
-=======
     @Reference(interfaceClass = CinemaService.class, check = false)
     CinemaService cinemaService;
-
     @RequestMapping("getFields")
     public BaseReqVo getFields(Integer cinemaId){
         return null;
     }
->>>>>>> 0e8ae5bbcdbf6a6e7e2898fd694c1ce25536346f
 }
