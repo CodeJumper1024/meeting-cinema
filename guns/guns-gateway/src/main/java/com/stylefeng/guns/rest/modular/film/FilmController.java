@@ -2,19 +2,15 @@ package com.stylefeng.guns.rest.modular.film;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.stylefeng.guns.rest.film.FilmService;
-<<<<<<< HEAD
 import com.stylefeng.guns.rest.film.vo.FilmVo;
 import com.stylefeng.guns.rest.film.vo.ShowFilmVo;
 import com.stylefeng.guns.rest.vo.BaseReqVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-=======
 import com.stylefeng.guns.rest.film.vo.*;
 import com.stylefeng.guns.rest.vo.BaseReqVo;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
->>>>>>> e2ec2602bd3a24269e265c8a3372f61b978c0c5d
-
 import java.util.List;
 
 /**
@@ -30,30 +26,49 @@ public class FilmController {
 
     @Reference(interfaceClass = FilmService.class, check = false)
     private FilmService filmService;
-<<<<<<< HEAD
     @RequestMapping(value = "/films/{filmId}",method = RequestMethod.GET)
-    public BaseReqVo showFilm(@PathVariable Integer filmId,@RequestParam Integer searchType ){
+    public BaseReqVo showFilm(@PathVariable Integer filmId,@RequestParam Integer searchType ) {
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
         ShowFilmVo showFilmVo = new ShowFilmVo();
-        showFilmVo=filmService.getShowFilmVo(filmId);
-        if(showFilmVo==null){
-            baseReqVo.setStatus(1);
-            baseReqVo.setMsg("查询失败，无影片可加载");
-            return baseReqVo;
-        }else {
-            try{
-            baseReqVo.setData(showFilmVo);
-            baseReqVo.setMsg("成功");
-            baseReqVo.setStatus(0);
-            return baseReqVo;
-            }catch (Exception e){
-                baseReqVo.setMsg("系统出现异常，请联系管理员");
-                baseReqVo.setStatus(999);
+        showFilmVo = filmService.getShowFilmVo(filmId);
+        if (showFilmVo == null) {
+            return BaseReqVo.queryFail();
+        } else {
+            try {
+                baseReqVo.setData(showFilmVo);
+                baseReqVo.setMsg("成功");
+                baseReqVo.setStatus(0);
+                baseReqVo.setImgPre("http://img.meetingshop.cn/");
                 return baseReqVo;
+            } catch (Exception e) {
+                return BaseReqVo.fail();
             }
         }
-=======
+    }
 
+    @RequestMapping(value = "/getFilms")
+    public BaseReqVo getFilms(@RequestParam Integer showType, @RequestParam Integer sortId,
+                              @RequestParam Integer catId,@RequestParam Integer sourceId,
+                              @RequestParam Integer yearId,@RequestParam Integer nowPage,
+                              @RequestParam Integer pageSize){
+        BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
+        GetFilmsVoAndPages film = filmService.getFilm(showType, sortId, catId, sourceId, yearId, nowPage, pageSize);
+        if (film == null) {
+            return BaseReqVo.queryFail();
+        } else {
+            try {
+                baseReqVo.setData(film.getGetFilmsVOS());
+                baseReqVo.setMsg("成功");
+                baseReqVo.setStatus(0);
+                baseReqVo.setNowPage(nowPage+"");
+                baseReqVo.setTotalPage(film.getTotalPage());
+                baseReqVo.setImgPre("http://img.meetingshop.cn/");
+                return baseReqVo;
+            } catch (Exception e) {
+                return BaseReqVo.fail();
+            }
+        }
+    }
     @RequestMapping(value = "/getIndex")
     public BaseReqVo getIndex(){
         BaseReqVo<Object> reqVo = new BaseReqVo<>();
@@ -96,6 +111,5 @@ public class FilmController {
             return BaseReqVo.queryFail();
         }
         return reqVo;
->>>>>>> e2ec2602bd3a24269e265c8a3372f61b978c0c5d
     }
 }

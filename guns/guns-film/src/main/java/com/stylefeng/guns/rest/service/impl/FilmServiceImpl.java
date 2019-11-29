@@ -56,8 +56,6 @@ public class FilmServiceImpl implements FilmService {
     @Autowired
     private MtimeCatDictTMapper mtimeCatDictTMapper;
     @Autowired
-    private MtimeSourceDictTMapper mtimeSourceDictTMapper;
-    @Autowired
     private MtimeYearDictTMapper mtimeYearDictTMapper;
 
     @Override
@@ -344,6 +342,61 @@ public class FilmServiceImpl implements FilmService {
         }
         yearInfoVos = convert2YearInfoVo(mtimeYearDictTS,yearId);
         return yearInfoVos;
+    }
+
+    @Override
+    public GetFilmsVoAndPages getFilm(Integer showType, Integer sortId, Integer catId, Integer sourceId, Integer yearId, Integer nowPage, Integer pageSize) {
+        GetFilmsVoAndPages getFilmsVoAndPages = new GetFilmsVoAndPages();
+        EntityWrapper<MtimeFilmT> entityWrapper=new EntityWrapper<>();
+        entityWrapper.eq("film_status",showType);
+        if(catId!=99) {
+            entityWrapper.like("film_cats", "#" + catId);
+        }
+        if(yearId!=99) {
+            entityWrapper.eq("film_date", yearId);
+        }
+        if(sourceId!=99) {
+            entityWrapper.eq("film_source", sourceId);
+        }
+        Page<MtimeFilmT> page=null;
+        if(sortId==1){
+            page = new Page<>(nowPage,pageSize,"film_status");
+        }else if(sortId==2){
+            page = new Page<>(nowPage,pageSize,"film_time");
+        }else{
+            page = new Page<>(nowPage,pageSize,"film_score");
+        }
+        List<MtimeFilmT> mtimeFilmTS=new ArrayList<>();
+        mtimeFilmTS = mtimeFilmTMapper.selectPage(page, entityWrapper);
+        int totalPage=0;
+        List<MtimeFilmT> mtimeFilmTS1=new ArrayList<>();
+        Integer count = mtimeFilmTMapper.selectCount(entityWrapper);
+        totalPage=count/pageSize;
+        if (count % pageSize != 0) {
+            totalPage++;
+        }
+        getFilmsVoAndPages.setTotalPage(totalPage+"");
+        List<GetFilmsVO> getFilmsVOS=new ArrayList<>();
+        if(CollectionUtils.isEmpty(mtimeFilmTS)){
+            return getFilmsVoAndPages;
+        }
+        for (MtimeFilmT mtimeFilmT : mtimeFilmTS) {
+            GetFilmsVO filmsVO = new GetFilmsVO();
+            filmsVO.setBoxNum(mtimeFilmT.getFilmBoxOffice());
+            filmsVO.setExpectNum(mtimeFilmT.getFilmPresalenum());
+            filmsVO.setFilmId(mtimeFilmT.getUuid());
+            filmsVO.setFilmName(mtimeFilmT.getFilmName());
+            filmsVO.setFilmScore(mtimeFilmT.getFilmScore());
+            filmsVO.setFilmType(mtimeFilmT.getFilmType());
+            filmsVO.setImgAddress(mtimeFilmT.getImgAddress());
+            Date filmTime = mtimeFilmT.getFilmTime();
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            String dateString = formatter.format(filmTime);
+            filmsVO.setShowTime("dateString");
+            getFilmsVOS.add(filmsVO);
+        }
+        getFilmsVoAndPages.setGetFilmsVOS(getFilmsVOS);
+        return getFilmsVoAndPages;
     }
 
     private ArrayList<YearInfoVo> convert2YearInfoVo(List<MtimeYearDictT> mtimeYearDictTS, Integer yearId) {
