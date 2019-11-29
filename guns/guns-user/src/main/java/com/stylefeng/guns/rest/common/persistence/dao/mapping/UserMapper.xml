@@ -7,5 +7,8 @@
 		<id column="id" property="id" />
 		<result column="userName" property="userName" />
 	</resultMap>
+	<select id="checkUsername" resultType="java.lang.String">
+		select user_name FROM `mtime_user_t` where user_name = #{username}
+	</select>
 
 </mapper>
