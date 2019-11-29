@@ -2,14 +2,18 @@ package com.stylefeng.guns.rest.vo;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class BaseReqVo<T> {
+public class BaseReqVo<T> implements Serializable {
     T data;
     String msg;
     Integer status;
     String imgPre;
     String nowPage;
     String totalPage;
+<<<<<<< HEAD
+=======
     public static BaseReqVo ok(){
         BaseReqVo baseReqVo = new BaseReqVo();
         baseReqVo.setStatus(0);
@@ -28,4 +32,5 @@ public class BaseReqVo<T> {
         baseReqVo.setMsg("系统出现异常，请联系管理员");
         return baseReqVo;
     }
+>>>>>>> e2ec2602bd3a24269e265c8a3372f61b978c0c5d
 }
