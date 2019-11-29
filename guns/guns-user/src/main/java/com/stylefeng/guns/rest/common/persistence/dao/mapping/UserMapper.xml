@@ -3,9 +3,36 @@
 <mapper namespace="com.stylefeng.guns.rest.common.persistence.dao.UserMapper">
 
 	<!-- 通用查询映射结果 -->
-	<resultMap id="BaseResultMap" type="com.stylefeng.guns.rest.common.persistence.model.User">
-		<id column="id" property="id" />
-		<result column="userName" property="userName" />
+	<resultMap id="usermap" type="com.stylefeng.guns.rest.user.vo.UserInfoVo">
+		<result column="UUID" property="uuid" />
+		<result column="user_name" property="username" />
+		<result column="user_pwd" property="password" />
+		<result column="nick_name" property="nickname" />
+		<result column="user_sex" property="sex" />
+		<result column="birthday" property="birthday" />
+		<result column="email" property="email" />
+		<result column="user_phone" property="phone" />
+		<result column="address" property="address" />
+		<result column="head_url" property="headAddress" />
+		<result column="biography" property="biography" />
+		<result column="life_state" property="lifeState" />
+		<result column="begin_time" property="createTime" />
+		<result column="update_time" property="updateTime" />
+	</resultMap>
+	<resultMap id="usermap1" type="com.stylefeng.guns.rest.user.vo.UserInfoModel">
+		<result column="UUID" property="uuid" />
+		<result column="user_name" property="username" />
+		<result column="nick_name" property="nickname" />
+		<result column="user_sex" property="sex" />
+		<result column="birthday" property="birthday" />
+		<result column="email" property="email" />
+		<result column="user_phone" property="phone" />
+		<result column="address" property="address" />
+		<result column="head_url" property="headAddress" />
+		<result column="biography" property="biography" />
+		<result column="life_state" property="lifeState" />
+		<result column="begin_time" property="begainTime" />
+		<result column="update_time" property="updateTime" />
 	</resultMap>
 	<select id="checkUsername" resultType="java.lang.String">
 		select user_name FROM mtime_user_t where user_name = #{username}
@@ -14,10 +41,32 @@
 		update mtime_user_t set uuid = #{userInfoVo.uuid}, nick_name = #{userInfoVo.nickname},
 		email = #{userInfoVo.email}, user_phone = #{userInfoVo.phone}, user_sex = #{userInfoVo.sex},
 		birthday = #{userInfoVo.birthday}, life_state = #{userInfoVo.lifeState},
-		biography = #{userInfoVo.biography}, address = #{userInfoVo.address}
+		biography = #{userInfoVo.biography}, address = #{userInfoVo.address} where uuid = #{userInfoVo.uuid}
 	</update>
-	<select id="queryUserInfo" resultType="com.stylefeng.guns.rest.user.vo.UserInfoVo">
-		select * from mtime_user_t where uuid = #{uuid}
+	<select id="queryUserInfo" resultMap="usermap1">
+		select UUID,user_name,nick_name,user_sex,birthday,email,user_phone,address,head_url,biography,life_state,begin_time,update_time
+		 from mtime_user_t where uuid = #{uuid}
+	</select>
+
+	<sql id="baseColumn">
+		UUID,user_name,user_pwd,nick_name,user_sex,birthday,email,user_phone,address,head_url,biography,life_state,begin_time,update_time
+	</sql>
+
+	<insert id="register" >
+		insert into mtime_user_t (user_name,user_pwd,email,user_phone,address) values
+		(#{username},#{password},#{email},#{mobile},#{address})
+	</insert>
+
+	<select id="checkExist" resultType="int">
+		select count(UUID) from mtime_user_t where user_name = #{username}
+	</select>
+
+	<select id="login" resultType="int">
+		select count(UUID) from mtime_user_t where user_name = #{username} and user_pwd = #{password}
+	</select>
+
+	<select id="selectByName" resultMap="usermap">
+		select <include refid="baseColumn"/> from mtime_user_t where user_name = #{username}
 	</select>
 
 </mapper>
