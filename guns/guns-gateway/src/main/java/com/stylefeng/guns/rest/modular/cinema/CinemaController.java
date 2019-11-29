@@ -21,4 +21,10 @@ public class CinemaController {
         BaseReqVo baseReqVo = cinemaService.getFields(cinemaId);
         return baseReqVo;
     }
+
+    @RequestMapping("getFieldInfo")
+    public BaseReqVo getFieldInfo(Integer cinemaId, Integer fieldId){
+        BaseReqVo baseReqVo = cinemaService.getFieldInfo(cinemaId, fieldId);
+        return baseReqVo;
+    }
 }

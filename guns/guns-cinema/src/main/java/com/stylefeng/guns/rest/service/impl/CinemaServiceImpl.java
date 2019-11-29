@@ -5,12 +5,15 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.stylefeng.guns.rest.Vo.CinemaInfoVo;
 import com.stylefeng.guns.rest.Vo.FilmFieldVo;
 import com.stylefeng.guns.rest.Vo.HallFilmInfoVo;
+import com.stylefeng.guns.rest.Vo.HallInfoVo;
 import com.stylefeng.guns.rest.cinema.CinemaService;
 import com.stylefeng.guns.rest.common.persistence.dao.MtimeCinemaTMapper;
 import com.stylefeng.guns.rest.common.persistence.dao.MtimeFieldTMapper;
+import com.stylefeng.guns.rest.common.persistence.dao.MtimeHallDictTMapper;
 import com.stylefeng.guns.rest.common.persistence.dao.MtimeHallFilmInfoTMapper;
 import com.stylefeng.guns.rest.common.persistence.model.MtimeCinemaT;
 import com.stylefeng.guns.rest.common.persistence.model.MtimeFieldT;
+import com.stylefeng.guns.rest.common.persistence.model.MtimeHallDictT;
 import com.stylefeng.guns.rest.common.persistence.model.MtimeHallFilmInfoT;
 import com.stylefeng.guns.rest.vo.BaseReqVo;
 import org.springframework.beans.BeanUtils;
@@ -36,6 +39,9 @@ public class CinemaServiceImpl implements CinemaService {
 
     @Autowired
     MtimeHallFilmInfoTMapper mtimeHallFilmInfoTMapper;
+
+    @Autowired
+    MtimeHallDictTMapper mtimeHallDictTMapper;
 
     //获取播放场次
     @Override
@@ -79,6 +85,48 @@ public class CinemaServiceImpl implements CinemaService {
         baseReqVo.setImgPre("http://img.meetingshop.cn/");
         baseReqVo.setStatus(0);
         return baseReqVo;
+    }
+
+    //获取当前影院信息
+    @Override
+    public BaseReqVo getFieldInfo(Integer cinemaId, Integer fieldId) {
+        BaseReqVo<Map> baseReqVo = new BaseReqVo<>();
+        //获取影院信息
+        HashMap<String, Object> dataMap = new HashMap<>();
+        MtimeCinemaT cinema = mtimeCinemaTMapper.selectById(cinemaId);
+        CinemaInfoVo cinemaInfo = conver2CinemaInfoVo(cinema);
+        dataMap.put("cinemaInfo", cinemaInfo);
+        //获取影片信息
+        MtimeFieldT mtimeFieldT = mtimeFieldTMapper.selectById(fieldId);
+        MtimeHallFilmInfoT mtimeHallFilmInfoTForSelect = new MtimeHallFilmInfoT();
+        mtimeHallFilmInfoTForSelect.setFilmId(mtimeFieldT.getFilmId());
+        MtimeHallFilmInfoT mtimeHallFilmInfoT = mtimeHallFilmInfoTMapper.selectOne(mtimeHallFilmInfoTForSelect);
+        HallFilmInfoVo filmInfo = conver2FilmInfoVo(mtimeHallFilmInfoT);
+        dataMap.put("filmInfo", filmInfo);
+        //获取影院信息
+        HallInfoVo hallInfo = getHallInfoVo(fieldId);
+        dataMap.put("hallInfo", hallInfo);
+        baseReqVo.setData(dataMap);
+        baseReqVo.setStatus(0);
+        baseReqVo.setImgPre("http://img.meetingshop.cn/");
+        return baseReqVo;
+    }
+
+    private HallInfoVo getHallInfoVo(Integer fieldId) {
+        MtimeFieldT mtimeFieldT = new MtimeFieldT();
+        mtimeFieldT.setUuid(fieldId);
+        MtimeFieldT fieldInfo = mtimeFieldTMapper.selectOne(mtimeFieldT);
+        MtimeHallDictT mtimeHallDictT = new MtimeHallDictT();
+        mtimeHallDictT.setShowName(fieldInfo.getHallName());
+        MtimeHallDictT hallDictT = mtimeHallDictTMapper.selectOne(mtimeHallDictT);
+        HallInfoVo hallInfoVo = new HallInfoVo();
+        hallInfoVo.setDiscountPrice("");
+        hallInfoVo.setSoldSeats("50");//后面需要联合订单查询
+        hallInfoVo.setHallFieldId(fieldInfo.getUuid());
+        hallInfoVo.setHallName(fieldInfo.getHallName());
+        hallInfoVo.setPrice(fieldInfo.getPrice());
+        hallInfoVo.setSeatFile(hallDictT.getSeatAddress());
+        return hallInfoVo;
     }
 
     private FilmFieldVo conver2FilmFieldVo(MtimeFieldT mtimeFieldT) {
