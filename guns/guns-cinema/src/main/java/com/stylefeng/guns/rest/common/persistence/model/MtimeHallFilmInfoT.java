@@ -13,7 +13,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author malei
- * @since 2019-11-28
+ * @since 2019-11-29
  */
 @TableName("mtime_hall_film_info_t")
 public class MtimeHallFilmInfoT extends Model<MtimeHallFilmInfoT> {

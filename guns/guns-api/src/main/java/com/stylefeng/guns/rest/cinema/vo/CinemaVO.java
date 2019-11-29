@@ -17,4 +17,6 @@ public class CinemaVO implements Serializable {
 
     private Integer uuid;
 
+    private String totalPage;
+
 }

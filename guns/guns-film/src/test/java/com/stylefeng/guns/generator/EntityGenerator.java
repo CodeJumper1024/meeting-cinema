@@ -30,7 +30,7 @@ public class EntityGenerator {
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
         /*生成文件的绝对路径，到java*/
-        gc.setOutputDir("D:\\meeting\\meeting-cinema\\guns\\guns-film\\src\\main\\java");//这里写你自己的java目录
+        gc.setOutputDir("D:\\Git\\WorkingSpace\\meeting-cinema\\guns\\guns-film\\src\\main\\java");//这里写你自己的java目录
         gc.setFileOverride(true);//是否覆盖
         gc.setActiveRecord(true);
         gc.setEnableCache(false);// XML 二级缓存

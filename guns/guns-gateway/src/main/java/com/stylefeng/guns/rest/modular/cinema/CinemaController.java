@@ -15,15 +15,20 @@ import java.util.List;
  * @date 2019/11/28 22:16
  */
 @RestController
-@RequestMapping("cinema")
+@RequestMapping("cinema/")
 public class CinemaController {
-
     @Reference(interfaceClass = CinemaService.class, check = false)
     CinemaService cinemaService;
-
     @RequestMapping("getFields")
     public BaseReqVo getFields(Integer cinemaId){
-        return null;
+        BaseReqVo baseReqVo = cinemaService.getFields(cinemaId);
+        return baseReqVo;
+    }
+
+    @RequestMapping("getFieldInfo")
+    public BaseReqVo getFieldInfo(Integer cinemaId, Integer fieldId){
+        BaseReqVo baseReqVo = cinemaService.getFieldInfo(cinemaId, fieldId);
+        return baseReqVo;
     }
 
     @RequestMapping("getCondition")
@@ -54,13 +59,12 @@ public class CinemaController {
         if(brandId==null||hallType==null||areaId==null||pageSize==null||nowPage==null){
             return baseReqVo.queryFail();
         }
-        List<CinemaVO> cinemaVOList = cinemaService.getCinemas(brandId,hallType,areaId);
-        baseReqVo.setData(cinemaVOList);
+        CinemaListVO cinemaListVO = cinemaService.getCinemas(brandId,hallType,areaId,pageSize,nowPage);
+        baseReqVo.setData(cinemaListVO.getCinemaVO());
         baseReqVo.setStatus(0);
         baseReqVo.setImgPre("http://img.meetingshop.cn/");
-        baseReqVo.setNowPage(nowPage);
-        //totalPage等于查询出的总条目数除以每页显示页数
-        baseReqVo.setTotalPage(1);
+        baseReqVo.setNowPage(nowPage.toString());
+        baseReqVo.setTotalPage(cinemaListVO.getTotalPage());
         return baseReqVo;
     }
 }
