@@ -4,11 +4,8 @@ import com.alibaba.dubbo.config.annotation.Service;
 import com.stylefeng.guns.rest.common.persistence.dao.UserMapper;
 import com.stylefeng.guns.rest.user.UserServiceAPI;
 import com.stylefeng.guns.rest.user.vo.UserInfoVo;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.sql.Wrapper;
 
 @Component
 @Service(interfaceClass = UserServiceAPI.class)
@@ -18,8 +15,14 @@ public class UserServiceImpl implements UserServiceAPI {
     UserMapper userMapper;
 
     @Override
-    public UserInfoVo updateUserInfo(UserInfoVo userInfoVo) {
-        //int status = userMapper.updateUserInfo(userInfoVo);
+    public int updateUserInfo(UserInfoVo userInfoVo) {
+        int status = userMapper.updateUserInfo(userInfoVo);
+        return status;
+    }
+
+    @Override
+    public UserInfoVo queryUserInfo(Integer uuid) {
+        UserInfoVo userInfoVo = userMapper.queryUserInfo(uuid);
         return userInfoVo;
     }
 

@@ -8,7 +8,16 @@
 		<result column="userName" property="userName" />
 	</resultMap>
 	<select id="checkUsername" resultType="java.lang.String">
-		select user_name FROM `mtime_user_t` where user_name = #{username}
+		select user_name FROM mtime_user_t where user_name = #{username}
+	</select>
+	<update id="updateUserInfo">
+		update mtime_user_t set uuid = #{userInfoVo.uuid}, nick_name = #{userInfoVo.nickname},
+		email = #{userInfoVo.email}, user_phone = #{userInfoVo.phone}, user_sex = #{userInfoVo.sex},
+		birthday = #{userInfoVo.birthday}, life_state = #{userInfoVo.lifeState},
+		biography = #{userInfoVo.biography}, address = #{userInfoVo.address}
+	</update>
+	<select id="queryUserInfo" resultType="com.stylefeng.guns.rest.user.vo.UserInfoVo">
+		select * from mtime_user_t where uuid = #{uuid}
 	</select>
 
 </mapper>
