@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2019/11/28 22:16
  */
 @RestController
-@RequestMapping("cinema")
+@RequestMapping("cinema/")
 public class CinemaController {
 
     @Reference(interfaceClass = CinemaService.class, check = false)
@@ -20,6 +20,7 @@ public class CinemaController {
 
     @RequestMapping("getFields")
     public BaseReqVo getFields(Integer cinemaId){
-        return null;
+        BaseReqVo baseReqVo = cinemaService.getFields(cinemaId);
+        return baseReqVo;
     }
 }

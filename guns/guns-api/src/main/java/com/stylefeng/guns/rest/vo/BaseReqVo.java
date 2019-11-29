@@ -2,15 +2,14 @@ package com.stylefeng.guns.rest.vo;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class BaseReqVo<T> {
+public class BaseReqVo<T> implements Serializable {
     T data;
     String msg;
     Integer status;
-    public static BaseReqVo ok(){
-        BaseReqVo baseReqVo = new BaseReqVo();
-        baseReqVo.setStatus(0);
-        baseReqVo.setMsg("成功");
-        return baseReqVo;
-    }
+    String imgPre;
+    String nowPage;
+    String totalPage;
 }
