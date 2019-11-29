@@ -2,11 +2,15 @@ package com.stylefeng.guns.rest.modular.film;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.stylefeng.guns.rest.film.FilmService;
+import com.stylefeng.guns.rest.film.vo.FilmVo;
+import com.stylefeng.guns.rest.film.vo.ShowFilmVo;
+import com.stylefeng.guns.rest.vo.BaseReqVo;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
 import com.stylefeng.guns.rest.film.vo.*;
 import com.stylefeng.guns.rest.vo.BaseReqVo;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.List;
 
 /**
@@ -16,12 +20,55 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "/film")
+@Slf4j
 public class FilmController {
     private static final String IMG_PRE = "http://img.meetingshop.cn/";
 
     @Reference(interfaceClass = FilmService.class, check = false)
     private FilmService filmService;
+    @RequestMapping(value = "/films/{filmId}",method = RequestMethod.GET)
+    public BaseReqVo showFilm(@PathVariable Integer filmId,@RequestParam Integer searchType ) {
+        BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
+        ShowFilmVo showFilmVo = new ShowFilmVo();
+        showFilmVo = filmService.getShowFilmVo(filmId);
+        if (showFilmVo == null) {
+            return BaseReqVo.queryFail();
+        } else {
+            try {
+                baseReqVo.setData(showFilmVo);
+                baseReqVo.setMsg("成功");
+                baseReqVo.setStatus(0);
+                baseReqVo.setImgPre("http://img.meetingshop.cn/");
+                return baseReqVo;
+            } catch (Exception e) {
+                return BaseReqVo.fail();
+            }
+        }
+    }
 
+    @RequestMapping(value = "/getFilms")
+    public BaseReqVo getFilms(@RequestParam Integer showType, @RequestParam Integer sortId,
+                              @RequestParam Integer catId,@RequestParam Integer sourceId,
+                              @RequestParam Integer yearId,@RequestParam Integer nowPage,
+                              @RequestParam Integer pageSize){
+        BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
+        GetFilmsVoAndPages film = filmService.getFilm(showType, sortId, catId, sourceId, yearId, nowPage, pageSize);
+        if (film == null) {
+            return BaseReqVo.queryFail();
+        } else {
+            try {
+                baseReqVo.setData(film.getGetFilmsVOS());
+                baseReqVo.setMsg("成功");
+                baseReqVo.setStatus(0);
+                baseReqVo.setNowPage(nowPage+"");
+                baseReqVo.setTotalPage(film.getTotalPage());
+                baseReqVo.setImgPre("http://img.meetingshop.cn/");
+                return baseReqVo;
+            } catch (Exception e) {
+                return BaseReqVo.fail();
+            }
+        }
+    }
     @RequestMapping(value = "/getIndex")
     public BaseReqVo getIndex(){
         BaseReqVo<Object> reqVo = new BaseReqVo<>();

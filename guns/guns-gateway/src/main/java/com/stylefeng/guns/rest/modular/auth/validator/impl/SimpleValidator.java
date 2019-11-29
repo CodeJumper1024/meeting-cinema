@@ -1,7 +1,9 @@
 package com.stylefeng.guns.rest.modular.auth.validator.impl;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.stylefeng.guns.rest.modular.auth.validator.IReqValidator;
 import com.stylefeng.guns.rest.modular.auth.validator.dto.Credence;
+import com.stylefeng.guns.rest.user.UserServiceAPI;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,9 +15,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class SimpleValidator implements IReqValidator {
 
-    private static String USER_NAME = "admin";
+    @Reference(interfaceClass = UserServiceAPI.class, check = false)
+    UserServiceAPI userServiceAPI;
 
-    private static String PASSWORD = "admin";
 
     @Override
     public boolean validate(Credence credence) {
@@ -23,10 +25,8 @@ public class SimpleValidator implements IReqValidator {
         String userName = credence.getCredenceName();
         String password = credence.getCredenceCode();
 
-        if (USER_NAME.equals(userName) && PASSWORD.equals(password)) {
-            return true;
-        } else {
-            return false;
-        }
+        //登录逻辑
+        boolean login = userServiceAPI.login(userName,password);
+        return login;
     }
 }
