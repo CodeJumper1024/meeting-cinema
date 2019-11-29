@@ -1,4 +1,4 @@
-package com.stylefeng.guns.rest.vo;
+package com.stylefeng.guns.rest;
 
 import lombok.Data;
 
@@ -8,8 +8,8 @@ public class BaseReqVo<T> {
     String msg;
     Integer status;
     String imgPre;
-    String nowPage;
-    String totalPage;
+    Integer nowPage;
+    Integer totalPage;
     public static BaseReqVo ok(){
         BaseReqVo baseReqVo = new BaseReqVo();
         baseReqVo.setStatus(0);
