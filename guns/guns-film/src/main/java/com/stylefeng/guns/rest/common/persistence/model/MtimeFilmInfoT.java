@@ -29,7 +29,7 @@ public class MtimeFilmInfoT extends Model<MtimeFilmInfoT> {
      * 影片编号
      */
     @TableField("film_id")
-    private String filmId;
+    private Integer filmId;
     /**
      * 影片英文名称
      */
@@ -39,7 +39,7 @@ public class MtimeFilmInfoT extends Model<MtimeFilmInfoT> {
      * 影片评分
      */
     @TableField("film_score")
-    private String filmScore;
+    private Double filmScore;
     /**
      * 评分人数,以万为单位
      */
@@ -74,11 +74,11 @@ public class MtimeFilmInfoT extends Model<MtimeFilmInfoT> {
         this.uuid = uuid;
     }
 
-    public String getFilmId() {
+    public Integer getFilmId() {
         return filmId;
     }
 
-    public void setFilmId(String filmId) {
+    public void setFilmId(Integer filmId) {
         this.filmId = filmId;
     }
 
@@ -90,11 +90,11 @@ public class MtimeFilmInfoT extends Model<MtimeFilmInfoT> {
         this.filmEnName = filmEnName;
     }
 
-    public String getFilmScore() {
+    public Double getFilmScore() {
         return filmScore;
     }
 
-    public void setFilmScore(String filmScore) {
+    public void setFilmScore(Double filmScore) {
         this.filmScore = filmScore;
     }
 

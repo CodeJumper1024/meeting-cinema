@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
 
 /**
@@ -45,7 +47,7 @@ public class MtimeFilmT extends Model<MtimeFilmT> {
      * 影片评分
      */
     @TableField("film_score")
-    private String filmScore;
+    private Double filmScore;
     /**
      * 影片预售数量
      */
@@ -80,6 +82,7 @@ public class MtimeFilmT extends Model<MtimeFilmT> {
      * 影片上映时间
      */
     @TableField("film_time")
+    @JsonFormat(shape=JsonFormat.Shape.STRING,pattern="yyyy-MM-dd",timezone="GMT+8")
     private Date filmTime;
     /**
      * 影片状态,1-正在热映，2-即将上映，3-经典影片
@@ -120,11 +123,11 @@ public class MtimeFilmT extends Model<MtimeFilmT> {
         this.imgAddress = imgAddress;
     }
 
-    public String getFilmScore() {
+    public Double getFilmScore() {
         return filmScore;
     }
 
-    public void setFilmScore(String filmScore) {
+    public void setFilmScore(Double filmScore) {
         this.filmScore = filmScore;
     }
 
