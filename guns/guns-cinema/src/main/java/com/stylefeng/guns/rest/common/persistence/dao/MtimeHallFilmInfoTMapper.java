@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * </p>
  *
  * @author malei
- * @since 2019-11-28
+ * @since 2019-11-29
  */
 public interface MtimeHallFilmInfoTMapper extends BaseMapper<MtimeHallFilmInfoT> {
 
