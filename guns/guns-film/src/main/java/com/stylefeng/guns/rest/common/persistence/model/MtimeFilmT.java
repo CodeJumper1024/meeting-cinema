@@ -47,7 +47,7 @@ public class MtimeFilmT extends Model<MtimeFilmT> {
      * 影片评分
      */
     @TableField("film_score")
-    private Double filmScore;
+    private String filmScore;
     /**
      * 影片预售数量
      */
@@ -123,11 +123,11 @@ public class MtimeFilmT extends Model<MtimeFilmT> {
         this.imgAddress = imgAddress;
     }
 
-    public Double getFilmScore() {
+    public String getFilmScore() {
         return filmScore;
     }
 
-    public void setFilmScore(Double filmScore) {
+    public void setFilmScore(String filmScore) {
         this.filmScore = filmScore;
     }
 

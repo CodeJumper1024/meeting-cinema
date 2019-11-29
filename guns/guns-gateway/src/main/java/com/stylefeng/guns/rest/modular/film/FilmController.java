@@ -20,11 +20,6 @@ public class FilmController {
 
     @Reference(interfaceClass = FilmService.class, check = false)
     private FilmService filmService;
-    @RequestMapping("get")
-    public FilmVo get(Integer id){
-        FilmVo filmVo = filmService.get(id);
-        return filmVo;
-    }
     @RequestMapping(value = "/films/{filmId}",method = RequestMethod.GET)
     public BaseReqVo showFilm(@PathVariable Integer filmId,@RequestParam Integer searchType ){
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();

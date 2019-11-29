@@ -10,7 +10,7 @@ public class ShowFilmVo implements Serializable {
     private String filmName;
     private String filmEnName;
     private String imgAddress;
-    private Double score;
+    private String score;
     private Integer scoreNum;
     private Integer totalBox;
     private String info01;

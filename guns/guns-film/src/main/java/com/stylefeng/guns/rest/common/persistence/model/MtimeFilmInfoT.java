@@ -39,7 +39,7 @@ public class MtimeFilmInfoT extends Model<MtimeFilmInfoT> {
      * 影片评分
      */
     @TableField("film_score")
-    private Double filmScore;
+    private String filmScore;
     /**
      * 评分人数,以万为单位
      */
@@ -90,11 +90,11 @@ public class MtimeFilmInfoT extends Model<MtimeFilmInfoT> {
         this.filmEnName = filmEnName;
     }
 
-    public Double getFilmScore() {
+    public String getFilmScore() {
         return filmScore;
     }
 
-    public void setFilmScore(Double filmScore) {
+    public void setFilmScore(String filmScore) {
         this.filmScore = filmScore;
     }
 
