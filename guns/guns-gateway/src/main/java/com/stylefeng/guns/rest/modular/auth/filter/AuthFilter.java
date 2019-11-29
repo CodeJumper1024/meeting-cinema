@@ -41,10 +41,19 @@ public class AuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        if (request.getServletPath().equals("/" + jwtProperties.getAuthPath())) {
-            //登录操作 放行
-            chain.doFilter(request, response);
-            return;
+
+        String ignorePath = jwtProperties.getIgnorePath();
+        //获得会被放行的一系列路径
+        String[] ignores = ignorePath.split(",");
+        //获得请求的path
+        String path = request.getServletPath();
+
+        for (String  ignore: ignores) {
+            if(path.contains(ignore)){
+                //请求的path是会被filter放行的路径是，不拦截
+                chain.doFilter(request, response);
+                return;
+            }
         }
 
         //下面是token验证的操作
@@ -57,8 +66,6 @@ public class AuthFilter extends OncePerRequestFilter {
                 Object o = redisTemplate.opsForValue().get(authToken);
                 if(o != null){
                     //token信息存在
-                    //取出用户信息
-                    UserInfoVo userInfo = (UserInfoVo) o;
                     //刷新token和用户信息的缓存时间
                     redisTemplate.expire(authToken,5*60, TimeUnit.SECONDS);
                 }else{
