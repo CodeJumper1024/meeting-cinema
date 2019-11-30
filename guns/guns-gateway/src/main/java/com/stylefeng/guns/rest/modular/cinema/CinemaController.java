@@ -1,6 +1,7 @@
 package com.stylefeng.guns.rest.modular.cinema;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.baomidou.mybatisplus.toolkit.CollectionUtils;
 import com.stylefeng.guns.rest.BaseReqVo;
 import com.stylefeng.guns.rest.cinema.CinemaService;
 import com.stylefeng.guns.rest.cinema.vo.*;
@@ -53,14 +54,16 @@ public class CinemaController {
     }
 
     @RequestMapping("getCinemas")
-    public BaseReqVo getCinemas(Integer brandId,Integer halltypeId,Integer areaId,Integer pageSize,
+    public BaseReqVo getCinemas(Integer brandId,Integer halltypeId,Integer hallType,Integer areaId,
+                                Integer pageSize,
                                 Integer nowPage){
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
-        if(brandId==null||halltypeId==null||areaId==null||pageSize==null||nowPage==null){
+        CinemaListVO cinemaListVO = cinemaService.getCinemas(brandId,halltypeId,hallType,areaId,
+                pageSize,
+                nowPage);
+        if(CollectionUtils.isEmpty(cinemaListVO.getCinemaVO())){
             return baseReqVo.queryFail();
         }
-        CinemaListVO cinemaListVO = cinemaService.getCinemas(brandId,halltypeId,areaId,pageSize,
-                nowPage);
         baseReqVo.setData(cinemaListVO.getCinemaVO());
         baseReqVo.setStatus(0);
         baseReqVo.setImgPre("http://img.meetingshop.cn/");
