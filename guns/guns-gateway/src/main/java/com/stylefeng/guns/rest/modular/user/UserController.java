@@ -4,11 +4,7 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.stylefeng.guns.rest.BaseReqVo;
 import com.stylefeng.guns.rest.config.properties.JwtProperties;
 import com.stylefeng.guns.rest.user.UserServiceAPI;
-<<<<<<< HEAD
-=======
 import com.stylefeng.guns.rest.user.vo.UserInfoModel;
-import com.stylefeng.guns.rest.vo.BaseReqVo;
->>>>>>> c7242ebb123ed478c81a187e8e4516308298b68d
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 
