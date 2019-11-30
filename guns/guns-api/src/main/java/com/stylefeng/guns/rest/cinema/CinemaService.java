@@ -4,7 +4,7 @@ import com.stylefeng.guns.rest.BaseReqVo;
 import com.stylefeng.guns.rest.cinema.vo.AreaVO;
 import com.stylefeng.guns.rest.cinema.vo.BrandVO;
 import com.stylefeng.guns.rest.cinema.vo.CinemaListVO;
-import com.stylefeng.guns.rest.cinema.vo.HallTypeVO;
+import com.stylefeng.guns.rest.cinema.vo.HalltypeVO;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public interface CinemaService {
 
     List<BrandVO> getBrandsById(Integer brandId);
 
-    List<HallTypeVO> getHallTypesById(Integer hallType);
+    List<HalltypeVO> getHallTypesById(Integer hallType);
 
     CinemaListVO getCinemas(Integer brandId, Integer hallType, Integer areaId, Integer pageSize,
                             Integer nowPage);
