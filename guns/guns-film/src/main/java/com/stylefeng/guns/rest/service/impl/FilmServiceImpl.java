@@ -6,6 +6,7 @@ import com.stylefeng.guns.rest.common.persistence.dao.*;
 import com.stylefeng.guns.rest.common.persistence.model.*;
 import com.stylefeng.guns.rest.film.FilmService;
 import com.stylefeng.guns.rest.film.vo.*;
+import lombok.experimental.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -159,7 +160,7 @@ public class FilmServiceImpl implements FilmService {
         String dateString = formatter.format(filmTime);
         showFilmVo.setInfo03(dateString+" "+source+"上映");
         Info04VO info04VO = new Info04VO();
-        info04VO.setBiography(mtimeFilmInfoT.getBiography());
+        info04VO.setBiopgraphy(mtimeFilmInfoT.getBiography());
         ActorsVO actorsVO = new ActorsVO();
         DirectorVo directorVo = new DirectorVo();
         MtimeActorT mtimeActorT1 = mtimeActorTMapper.selectById(mtimeFilmInfoT.getDirectorId());
@@ -185,12 +186,15 @@ public class FilmServiceImpl implements FilmService {
         info04VO.setActors(actorsVO);
         showFilmVo.setInfo04(info04VO);
         imgVO imgVO = new imgVO();
-        imgVO.setMainImg(mtimeFilmT.getImgAddress());
-        imgVO.setImg01("");
-        imgVO.setImg02("");
-        imgVO.setImg03("");
-        imgVO.setImg04("");
-        showFilmVo.setImgVO(imgVO);
+        String filmImgs = mtimeFilmInfoT.getFilmImgs();
+        String[] split = filmImgs.split(",");
+        imgVO.setMainImg(split[0]);
+        imgVO.setImg01(split[1]);
+        imgVO.setImg02(split[2]);
+        imgVO.setImg03(split[3]);
+        imgVO.setImg04(split[4]);
+        info04VO.setImgVO(imgVO);
+        info04VO.setFilmId(filmId);
         showFilmVo.setFilmId(filmId);
         return showFilmVo;
     }
@@ -336,13 +340,13 @@ public class FilmServiceImpl implements FilmService {
         EntityWrapper<MtimeFilmT> entityWrapper=new EntityWrapper<>();
         entityWrapper.eq("film_status",showType);
         if(catId!=99) {
-            entityWrapper.like("film_cats", "#" + catId);
+            entityWrapper.like("film_cats","#"+catId+"#");
         }
         if(yearId!=99) {
             entityWrapper.eq("film_date", yearId);
         }
         if(sourceId!=99) {
-            entityWrapper.eq("film_source", sourceId);
+            entityWrapper.eq("film_area", sourceId);
         }
         Page<MtimeFilmT> page=null;
         if(sortId==1){

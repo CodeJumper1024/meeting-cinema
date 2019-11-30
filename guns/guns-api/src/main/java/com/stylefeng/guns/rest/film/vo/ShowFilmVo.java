@@ -17,6 +17,5 @@ public class ShowFilmVo implements Serializable {
     private String info02;
     private String info03;
     private Info04VO info04;
-    private imgVO imgVO;
     private Integer filmId;
 }
