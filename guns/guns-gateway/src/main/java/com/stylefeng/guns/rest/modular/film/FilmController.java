@@ -45,9 +45,10 @@ public class FilmController {
     @RequestMapping(value = "/getFilms")
     public BaseReqVo getFilms(@RequestParam Integer showType, @RequestParam Integer sortId,
                               @RequestParam Integer catId,@RequestParam Integer sourceId,
-                              @RequestParam Integer yearId,@RequestParam Integer nowPage,
+                              @RequestParam Integer yearId,@RequestParam Integer offset,
                               @RequestParam Integer pageSize){
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
+        Integer nowPage=offset;
         GetFilmsVoAndPages film = filmService.getFilm(showType, sortId, catId, sourceId, yearId, nowPage, pageSize);
         if (film == null) {
             return BaseReqVo.queryFail();
