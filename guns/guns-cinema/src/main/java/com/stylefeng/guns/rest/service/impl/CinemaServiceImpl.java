@@ -117,15 +117,11 @@ public class CinemaServiceImpl implements CinemaService {
         if(areaId!=99){
             entityWrapper.eq("area_id",areaId);
         }
-        if(hallType!=null){
-            if(hallType!=99) {
-                entityWrapper.like("hall_ids", "#" + hallType + "#");
-            }
+        if(hallType!=null && hallType!=99){
+            entityWrapper.like("hall_ids", "#" + hallType + "#");
         }
-        if(halltypeId!=null){
-            if(halltypeId!=99) {
-                entityWrapper.like("hall_ids", "#" + halltypeId + "#");
-            }
+        if(halltypeId!=null && halltypeId!=99){
+            entityWrapper.like("hall_ids", "#" + halltypeId + "#");
         }
         Page<MtimeCinemaT> page = new Page<>(nowPage,pageSize);
         List<MtimeCinemaT> mtimeCinemaTS = mtimeCinemaTMapper.selectPage(page,entityWrapper);
