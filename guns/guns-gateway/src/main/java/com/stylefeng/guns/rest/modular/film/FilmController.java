@@ -1,16 +1,12 @@
 package com.stylefeng.guns.rest.modular.film;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.stylefeng.guns.rest.BaseReqVo;
 import com.stylefeng.guns.rest.film.FilmService;
-import com.stylefeng.guns.rest.film.vo.FilmVo;
-import com.stylefeng.guns.rest.film.vo.ShowFilmVo;
-import com.stylefeng.guns.rest.vo.BaseReqVo;
+import com.stylefeng.guns.rest.film.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import com.stylefeng.guns.rest.film.vo.*;
-import com.stylefeng.guns.rest.vo.BaseReqVo;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
 
 /**
@@ -74,17 +70,17 @@ public class FilmController {
         BaseReqVo<Object> reqVo = new BaseReqVo<>();
         try {
             FilmIndexVo filmIndexVo = new FilmIndexVo();
-            List<BannerVo> banner = filmService.getBanner();
+            List<BannerVo> banners = filmService.getBanner();
             List<FilmRankVo> expectRanking = filmService.getExpectRanking(10);
-            FilmsVo hotFilm = filmService.getHotFilm(8, true);
-            List<FilmRankVo> ranking = filmService.getRanking(10);
-            FilmsVo soonFilm = filmService.getSoonFilm(8, true);
+            FilmsVo hotFilms = filmService.getHotFilm(8, true);
+            List<FilmRankVo> boxRanking = filmService.getRanking(10);
+            FilmsVo soonFilms = filmService.getSoonFilm(8, true);
             List<FilmRankVo> top100 = filmService.getTop100(10);
-            filmIndexVo.setBanners(banner);
-            filmIndexVo.setBoxRanking(ranking);
+            filmIndexVo.setBanners(banners);
+            filmIndexVo.setBoxRanking(boxRanking);
             filmIndexVo.setExpectRanking(expectRanking);
-            filmIndexVo.setHotFilms(hotFilm);
-            filmIndexVo.setSoonFilm(soonFilm);
+            filmIndexVo.setHotFilms(hotFilms);
+            filmIndexVo.setSoonFilms(soonFilms);
             filmIndexVo.setTop100(top100);
             reqVo.setData(filmIndexVo);
             reqVo.setStatus(0);

@@ -2,13 +2,13 @@ package com.stylefeng.guns.rest.common.persistence.dao;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.stylefeng.guns.rest.common.persistence.model.User;
+import com.stylefeng.guns.rest.user.vo.UserInfoModel;
 import com.stylefeng.guns.rest.user.vo.UserInfoVo;
 import org.apache.ibatis.annotations.Param;
 
-
 /**
  * <p>
-  *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author stylefeng
@@ -20,6 +20,12 @@ public interface UserMapper extends BaseMapper<User> {
     int checkExist(@Param("username") String username);
 
     int login(@Param("username") String username, @Param("password") String password);
+
+    String checkUsername(@Param("username") String username);
+
+    int updateUserInfo(@Param("userInfoVo") UserInfoModel userInfoModel);
+
+    UserInfoModel queryUserInfo(@Param("uuid") Integer uuid);
 
     UserInfoVo selectByName(@Param("username") String username);
 }
