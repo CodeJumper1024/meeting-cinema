@@ -70,17 +70,17 @@ public class FilmController {
         BaseReqVo<Object> reqVo = new BaseReqVo<>();
         try {
             FilmIndexVo filmIndexVo = new FilmIndexVo();
-            List<BannerVo> banner = filmService.getBanner();
+            List<BannerVo> banners = filmService.getBanner();
             List<FilmRankVo> expectRanking = filmService.getExpectRanking(10);
-            FilmsVo hotFilm = filmService.getHotFilm(8, true);
-            List<FilmRankVo> ranking = filmService.getRanking(10);
-            FilmsVo soonFilm = filmService.getSoonFilm(8, true);
+            FilmsVo hotFilms = filmService.getHotFilm(8, true);
+            List<FilmRankVo> boxRanking = filmService.getRanking(10);
+            FilmsVo soonFilms = filmService.getSoonFilm(8, true);
             List<FilmRankVo> top100 = filmService.getTop100(10);
-            filmIndexVo.setBanners(banner);
-            filmIndexVo.setBoxRanking(ranking);
+            filmIndexVo.setBanners(banners);
+            filmIndexVo.setBoxRanking(boxRanking);
             filmIndexVo.setExpectRanking(expectRanking);
-            filmIndexVo.setHotFilms(hotFilm);
-            filmIndexVo.setSoonFilm(soonFilm);
+            filmIndexVo.setHotFilms(hotFilms);
+            filmIndexVo.setSoonFilms(soonFilms);
             filmIndexVo.setTop100(top100);
             reqVo.setData(filmIndexVo);
             reqVo.setStatus(0);
