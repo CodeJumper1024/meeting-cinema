@@ -5,10 +5,12 @@ import com.stylefeng.guns.core.util.RenderUtil;
 import com.stylefeng.guns.rest.common.exception.BizExceptionEnum;
 import com.stylefeng.guns.rest.config.properties.JwtProperties;
 import com.stylefeng.guns.rest.modular.auth.util.JwtTokenUtil;
+import com.stylefeng.guns.rest.user.vo.UserInfoVo;
 import io.jsonwebtoken.JwtException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -16,6 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 对客户端请求的jwt token验证过滤器
@@ -33,22 +36,41 @@ public class AuthFilter extends OncePerRequestFilter {
     @Autowired
     private JwtProperties jwtProperties;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        if (request.getServletPath().equals("/" + jwtProperties.getAuthPath())) {
-            chain.doFilter(request, response);
-            return;
+
+        String ignorePath = jwtProperties.getIgnorePath();
+        //获得会被放行的一系列路径
+        String[] ignores = ignorePath.split(",");
+        //获得请求的path
+        String path = request.getServletPath();
+
+        for (String  ignore: ignores) {
+            if(path.contains(ignore)){
+                //请求的path是会被filter放行的路径是，不拦截
+                chain.doFilter(request, response);
+                return;
+            }
         }
+
+        //下面是token验证的操作
         final String requestHeader = request.getHeader(jwtProperties.getHeader());
         String authToken = null;
         if (requestHeader != null && requestHeader.startsWith("Bearer ")) {
             authToken = requestHeader.substring(7);
-
-            //验证token是否过期,包含了验证jwt是否正确
+            //验证token是否过期,以redis里面token是否过期为准（不以请求头中token为准）,包含了验证jwt是否正确
             try {
-                boolean flag = jwtTokenUtil.isTokenExpired(authToken);
-                if (flag) {
-                    RenderUtil.renderJson(response, new ErrorTip(BizExceptionEnum.TOKEN_EXPIRED.getCode(), BizExceptionEnum.TOKEN_EXPIRED.getMessage()));
+                Object o = redisTemplate.opsForValue().get(authToken);
+                if(o != null){
+                    //token信息存在
+                    //刷新token和用户信息的缓存时间
+                    redisTemplate.expire(authToken,5*60, TimeUnit.SECONDS);
+                }else{
+                    //token不存在或者已经过期
+                    //跳转到登录页面
                     return;
                 }
             } catch (JwtException e) {
@@ -63,4 +85,5 @@ public class AuthFilter extends OncePerRequestFilter {
         }
         chain.doFilter(request, response);
     }
+
 }

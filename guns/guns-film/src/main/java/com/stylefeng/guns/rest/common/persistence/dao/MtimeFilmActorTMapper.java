@@ -9,11 +9,8 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * </p>
  *
  * @author xdd
-<<<<<<< HEAD
  * @since 2019-11-29
-=======
- * @since 2019-11-28
->>>>>>> 0e8ae5bbcdbf6a6e7e2898fd694c1ce25536346f
+
  */
 public interface MtimeFilmActorTMapper extends BaseMapper<MtimeFilmActorT> {
 

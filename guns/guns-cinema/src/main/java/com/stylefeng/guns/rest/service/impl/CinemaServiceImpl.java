@@ -2,17 +2,17 @@ package com.stylefeng.guns.rest.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.baomidou.mybatisplus.toolkit.CollectionUtils;
+import com.stylefeng.guns.rest.BaseReqVo;
 import com.stylefeng.guns.rest.Vo.CinemaInfoVo;
 import com.stylefeng.guns.rest.Vo.FilmFieldVo;
 import com.stylefeng.guns.rest.Vo.HallFilmInfoVo;
+import com.stylefeng.guns.rest.Vo.HallInfoVo;
 import com.stylefeng.guns.rest.cinema.CinemaService;
-import com.stylefeng.guns.rest.common.persistence.dao.MtimeCinemaTMapper;
-import com.stylefeng.guns.rest.common.persistence.dao.MtimeFieldTMapper;
-import com.stylefeng.guns.rest.common.persistence.dao.MtimeHallFilmInfoTMapper;
-import com.stylefeng.guns.rest.common.persistence.model.MtimeCinemaT;
-import com.stylefeng.guns.rest.common.persistence.model.MtimeFieldT;
-import com.stylefeng.guns.rest.common.persistence.model.MtimeHallFilmInfoT;
-import com.stylefeng.guns.rest.vo.BaseReqVo;
+import com.stylefeng.guns.rest.cinema.vo.*;
+import com.stylefeng.guns.rest.common.persistence.dao.*;
+import com.stylefeng.guns.rest.common.persistence.model.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,13 +29,115 @@ import java.util.*;
 public class CinemaServiceImpl implements CinemaService {
 
     @Autowired
+    MtimeAreaDictTMapper mtimeAreaDictTMapper;
+    @Autowired
+    MtimeBrandDictTMapper mtimeBrandDictTMapper;
+    @Autowired
     MtimeCinemaTMapper mtimeCinemaTMapper;
-
     @Autowired
     MtimeFieldTMapper mtimeFieldTMapper;
-
+    @Autowired
+    MtimeHallDictTMapper mtimeHallDictTMapper;
     @Autowired
     MtimeHallFilmInfoTMapper mtimeHallFilmInfoTMapper;
+
+    @Override
+    public List<AreaVO> getAreasById(Integer areaId) {
+        List<AreaVO> list = new ArrayList<>();
+        EntityWrapper<MtimeAreaDictT> entityWrapper = new EntityWrapper<>();
+        List<MtimeAreaDictT> mtimeAreaDictTS = mtimeAreaDictTMapper.selectList(entityWrapper);
+        if(CollectionUtils.isEmpty(mtimeAreaDictTS)){
+            return list;
+        }
+        for(MtimeAreaDictT mtimeAreaDictT :mtimeAreaDictTS){
+            AreaVO areaVO = new AreaVO();
+            areaVO.setAreaId(mtimeAreaDictT.getUuid());
+            areaVO.setAreaName(mtimeAreaDictT.getShowName());
+            areaVO.setActive(false);
+            if(mtimeAreaDictT.getUuid()==areaId){
+                areaVO.setActive(true);
+            }
+            list.add(areaVO);
+        }
+        return list;
+    }
+
+    @Override
+    public List<BrandVO> getBrandsById(Integer brandId) {
+        List<BrandVO> list = new ArrayList<>();
+        EntityWrapper<MtimeBrandDictT> entityWrapper = new EntityWrapper<>();
+        List<MtimeBrandDictT> mtimeBrandDictTS = mtimeBrandDictTMapper.selectList(entityWrapper);
+        if(CollectionUtils.isEmpty(mtimeBrandDictTS)){
+            return list;
+        }
+        for(MtimeBrandDictT mtimeBrandDictT : mtimeBrandDictTS){
+            BrandVO brandVO = new BrandVO();
+            brandVO.setBrandId(mtimeBrandDictT.getUuid());
+            brandVO.setBrandName(mtimeBrandDictT.getShowName());
+            brandVO.setActive(false);
+            if(mtimeBrandDictT.getUuid()==brandId){
+                brandVO.setActive(true);
+            }
+            list.add(brandVO);
+        }
+        return list;
+    }
+
+    @Override
+    public List<HallTypeVO> getHallTypesById(Integer hallType) {
+        List<HallTypeVO> list = new ArrayList<>();
+        EntityWrapper<MtimeHallDictT> entityWrapper = new EntityWrapper<>();
+        List<MtimeHallDictT> mtimeHallDictTS = mtimeHallDictTMapper.selectList(entityWrapper);
+        if(CollectionUtils.isEmpty(mtimeHallDictTS)){
+            return list;
+        }
+        for(MtimeHallDictT mtimeHallDictT :mtimeHallDictTS){
+            HallTypeVO hallTypeVO = new HallTypeVO();
+            hallTypeVO.setHalltypeId(mtimeHallDictT.getUuid());
+            hallTypeVO.setHalltypeName(mtimeHallDictT.getShowName());
+            hallTypeVO.setActive(false);
+            if(hallType==mtimeHallDictT.getUuid()){
+                hallTypeVO.setActive(true);
+            }
+            list.add(hallTypeVO);
+        }
+        return list;
+    }
+
+    @Override
+    public CinemaListVO getCinemas(Integer brandId, Integer hallType, Integer areaId, Integer pageSize, Integer nowPage) {
+        List<CinemaVO> list = new ArrayList<>();
+        CinemaListVO cinemaListVO = new CinemaListVO();
+        EntityWrapper<MtimeCinemaT> entityWrapper = new EntityWrapper<>();
+        if(brandId!=99){
+            entityWrapper.eq("brand_id",brandId);
+        }
+        if(hallType!=99){
+            entityWrapper.eq("area_id",areaId);
+        }
+        if(areaId!=99){
+            entityWrapper.like("hall_ids","#"+hallType+"#");
+        }
+        Page<MtimeCinemaT> page = new Page<>(nowPage,pageSize);
+        List<MtimeCinemaT> mtimeCinemaTS = mtimeCinemaTMapper.selectPage(page,entityWrapper);
+        int totalPage=0;
+        Integer count = mtimeCinemaTMapper.selectCount(entityWrapper);
+        totalPage=count/pageSize;
+        if(count%pageSize !=0){
+            totalPage++;
+        }
+        cinemaListVO.setTotalPage(totalPage+"");
+        for(MtimeCinemaT mtimeCinemaT :mtimeCinemaTS){
+            CinemaVO cinemaVO = new CinemaVO();
+            cinemaVO.setUuid(mtimeCinemaT.getUuid());
+            cinemaVO.setCinemaAddress(mtimeCinemaT.getCinemaAddress());
+            cinemaVO.setCinemaName(mtimeCinemaT.getCinemaName());
+            cinemaVO.setMinimumPrice(mtimeCinemaT.getMinimumPrice());
+            list.add(cinemaVO);
+        }
+        cinemaListVO.setCinemaVO(list);
+        return cinemaListVO;
+    }
 
     //获取播放场次
     @Override
@@ -79,6 +181,48 @@ public class CinemaServiceImpl implements CinemaService {
         baseReqVo.setImgPre("http://img.meetingshop.cn/");
         baseReqVo.setStatus(0);
         return baseReqVo;
+    }
+
+    //获取当前影院信息
+    @Override
+    public BaseReqVo getFieldInfo(Integer cinemaId, Integer fieldId) {
+        BaseReqVo<Map> baseReqVo = new BaseReqVo<>();
+        //获取影院信息
+        HashMap<String, Object> dataMap = new HashMap<>();
+        MtimeCinemaT cinema = mtimeCinemaTMapper.selectById(cinemaId);
+        CinemaInfoVo cinemaInfo = conver2CinemaInfoVo(cinema);
+        dataMap.put("cinemaInfo", cinemaInfo);
+        //获取影片信息
+        MtimeFieldT mtimeFieldT = mtimeFieldTMapper.selectById(fieldId);
+        MtimeHallFilmInfoT mtimeHallFilmInfoTForSelect = new MtimeHallFilmInfoT();
+        mtimeHallFilmInfoTForSelect.setFilmId(mtimeFieldT.getFilmId());
+        MtimeHallFilmInfoT mtimeHallFilmInfoT = mtimeHallFilmInfoTMapper.selectOne(mtimeHallFilmInfoTForSelect);
+        HallFilmInfoVo filmInfo = conver2FilmInfoVo(mtimeHallFilmInfoT);
+        dataMap.put("filmInfo", filmInfo);
+        //获取影院信息
+        HallInfoVo hallInfo = getHallInfoVo(fieldId);
+        dataMap.put("hallInfo", hallInfo);
+        baseReqVo.setData(dataMap);
+        baseReqVo.setStatus(0);
+        baseReqVo.setImgPre("http://img.meetingshop.cn/");
+        return baseReqVo;
+    }
+
+    private HallInfoVo getHallInfoVo(Integer fieldId) {
+        MtimeFieldT mtimeFieldT = new MtimeFieldT();
+        mtimeFieldT.setUuid(fieldId);
+        MtimeFieldT fieldInfo = mtimeFieldTMapper.selectOne(mtimeFieldT);
+        MtimeHallDictT mtimeHallDictT = new MtimeHallDictT();
+        mtimeHallDictT.setShowName(fieldInfo.getHallName());
+        MtimeHallDictT hallDictT = mtimeHallDictTMapper.selectOne(mtimeHallDictT);
+        HallInfoVo hallInfoVo = new HallInfoVo();
+        hallInfoVo.setDiscountPrice("");
+        hallInfoVo.setSoldSeats("50");//后面需要联合订单查询
+        hallInfoVo.setHallFieldId(fieldInfo.getUuid());
+        hallInfoVo.setHallName(fieldInfo.getHallName());
+        hallInfoVo.setPrice(fieldInfo.getPrice());
+        hallInfoVo.setSeatFile(hallDictT.getSeatAddress());
+        return hallInfoVo;
     }
 
     private FilmFieldVo conver2FilmFieldVo(MtimeFieldT mtimeFieldT) {

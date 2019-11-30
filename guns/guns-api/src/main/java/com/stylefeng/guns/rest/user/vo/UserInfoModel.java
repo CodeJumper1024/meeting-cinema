@@ -6,13 +6,11 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class UserInfoVo implements Serializable {
+public class UserInfoModel implements Serializable {
 
     private Integer uuid;
 
     private String username;
-
-    private String password;
 
     private String nickname;
 
@@ -32,7 +30,7 @@ public class UserInfoVo implements Serializable {
 
     private String headAddress;
 
-    private Date createTime;
+    private Date begainTime;
 
     private Date updateTime;
 }
