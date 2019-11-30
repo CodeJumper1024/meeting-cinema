@@ -40,7 +40,7 @@
 	<update id="updateUserInfo">
 		update mtime_user_t set uuid = #{userInfoVo.uuid}, nick_name = #{userInfoVo.nickname},
 		email = #{userInfoVo.email}, user_phone = #{userInfoVo.phone}, user_sex = #{userInfoVo.sex},
-		birthday = #{userInfoVo.birthday}, life_state = #{userInfoVo.lifeState},
+		birthday = #{userInfoVo.birthday}, life_state = #{userInfoVo.lifeState}, head_url = #{userInfoVo.headAddress},
 		biography = #{userInfoVo.biography}, address = #{userInfoVo.address} where uuid = #{userInfoVo.uuid}
 	</update>
 	<select id="queryUserInfo" resultMap="usermap1">
