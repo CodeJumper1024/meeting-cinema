@@ -14,5 +14,5 @@ public class DataVO implements Serializable {
 
     List<BrandVO> brandList;
 
-    List<HallTypeVO> hallTypeList;
+    List<HalltypeVO> halltypeList;
 }

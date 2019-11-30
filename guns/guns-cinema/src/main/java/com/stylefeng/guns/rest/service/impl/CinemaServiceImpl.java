@@ -84,39 +84,40 @@ public class CinemaServiceImpl implements CinemaService {
     }
 
     @Override
-    public List<HallTypeVO> getHallTypesById(Integer hallType) {
-        List<HallTypeVO> list = new ArrayList<>();
+    public List<HalltypeVO> getHallTypesById(Integer hallType) {
+        List<HalltypeVO> list = new ArrayList<>();
         EntityWrapper<MtimeHallDictT> entityWrapper = new EntityWrapper<>();
         List<MtimeHallDictT> mtimeHallDictTS = mtimeHallDictTMapper.selectList(entityWrapper);
         if(CollectionUtils.isEmpty(mtimeHallDictTS)){
             return list;
         }
         for(MtimeHallDictT mtimeHallDictT :mtimeHallDictTS){
-            HallTypeVO hallTypeVO = new HallTypeVO();
-            hallTypeVO.setHalltypeId(mtimeHallDictT.getUuid());
-            hallTypeVO.setHalltypeName(mtimeHallDictT.getShowName());
-            hallTypeVO.setActive(false);
+            HalltypeVO HalltypeVO = new HalltypeVO();
+            HalltypeVO.setHalltypeId(mtimeHallDictT.getUuid());
+            HalltypeVO.setHalltypeName(mtimeHallDictT.getShowName());
+            HalltypeVO.setActive(false);
             if(hallType==mtimeHallDictT.getUuid()){
-                hallTypeVO.setActive(true);
+                HalltypeVO.setActive(true);
             }
-            list.add(hallTypeVO);
+            list.add(HalltypeVO);
         }
         return list;
     }
 
     @Override
-    public CinemaListVO getCinemas(Integer brandId, Integer hallType, Integer areaId, Integer pageSize, Integer nowPage) {
+    public CinemaListVO getCinemas(Integer brandId, Integer halltypeId, Integer areaId,
+                                   Integer pageSize, Integer nowPage) {
         List<CinemaVO> list = new ArrayList<>();
         CinemaListVO cinemaListVO = new CinemaListVO();
         EntityWrapper<MtimeCinemaT> entityWrapper = new EntityWrapper<>();
         if(brandId!=99){
             entityWrapper.eq("brand_id",brandId);
         }
-        if(hallType!=99){
+        if(halltypeId!=99){
             entityWrapper.eq("area_id",areaId);
         }
         if(areaId!=99){
-            entityWrapper.like("hall_ids","#"+hallType+"#");
+            entityWrapper.like("hall_ids","#"+halltypeId+"#");
         }
         Page<MtimeCinemaT> page = new Page<>(nowPage,pageSize);
         List<MtimeCinemaT> mtimeCinemaTS = mtimeCinemaTMapper.selectPage(page,entityWrapper);
