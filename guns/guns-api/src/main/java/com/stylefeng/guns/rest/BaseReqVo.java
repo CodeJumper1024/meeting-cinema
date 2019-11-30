@@ -1,4 +1,4 @@
-package com.stylefeng.guns.rest.vo;
+package com.stylefeng.guns.rest;
 
 import lombok.Data;
 

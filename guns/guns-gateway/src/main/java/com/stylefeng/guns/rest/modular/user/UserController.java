@@ -1,10 +1,10 @@
 package com.stylefeng.guns.rest.modular.user;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.stylefeng.guns.rest.BaseReqVo;
 import com.stylefeng.guns.rest.config.properties.JwtProperties;
 import com.stylefeng.guns.rest.user.UserServiceAPI;
 import com.stylefeng.guns.rest.user.vo.UserInfoModel;
-import com.stylefeng.guns.rest.vo.BaseReqVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 
