@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -39,7 +41,7 @@ public class AuthController {
     private RedisTemplate redisTemplate;
 
     @RequestMapping(value = "${jwt.auth-path}")
-    public BaseReqVo createAuthenticationToken(AuthRequest authRequest) {
+    public BaseReqVo createAuthenticationToken(AuthRequest authRequest, HttpServletResponse response) {
 
         BaseReqVo baseReqVo = new BaseReqVo();
 
