@@ -200,6 +200,7 @@ public class FilmServiceImpl implements FilmService {
         List<FilmRankVo> vos = new ArrayList<>();
         Page<MtimeFilmT> page = new Page<>(1,count,"film_box_office",false);
         EntityWrapper<MtimeFilmT> entityWrapper = new EntityWrapper<>();
+        entityWrapper.eq("film_status",1);
         List<MtimeFilmT> mtimeFilmTS = mtimeFilmTMapper.selectPage(page, entityWrapper);
         if(CollectionUtils.isEmpty(mtimeFilmTS)){
             return vos;
@@ -226,6 +227,7 @@ public class FilmServiceImpl implements FilmService {
         List<FilmRankVo> vos = new ArrayList<>();
         Page<MtimeFilmT> page = new Page<>(1,count,"film_preSaleNum",false);
         EntityWrapper<MtimeFilmT> entityWrapper = new EntityWrapper<>();
+        entityWrapper.eq("film_status",2);
         List<MtimeFilmT> mtimeFilmTS = mtimeFilmTMapper.selectPage(page, entityWrapper);
         if(CollectionUtils.isEmpty(mtimeFilmTS)){
             return vos;
