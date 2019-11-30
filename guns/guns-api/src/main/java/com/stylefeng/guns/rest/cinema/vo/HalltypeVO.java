@@ -5,7 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class HallTypeVO implements Serializable {
+public class HalltypeVO implements Serializable {
 
     private static final long serialVersionUID = -8100763237975416531L;
 

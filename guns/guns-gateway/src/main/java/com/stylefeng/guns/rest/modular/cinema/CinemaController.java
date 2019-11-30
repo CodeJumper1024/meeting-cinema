@@ -40,10 +40,10 @@ public class CinemaController {
         }
         List<AreaVO> areaVOList = cinemaService.getAreasById(areaId);
         List<BrandVO> brandVOList = cinemaService.getBrandsById(brandId);
-        List<HallTypeVO> hallTypeVOList = cinemaService.getHallTypesById(hallType);
+        List<HalltypeVO> HalltypeVOList = cinemaService.getHallTypesById(hallType);
         dataVO.setAreaList(areaVOList);
         dataVO.setBrandList(brandVOList);
-        dataVO.setHallTypeList(hallTypeVOList);
+        dataVO.setHalltypeList(HalltypeVOList);
 
         baseReqVo.setData(dataVO);
         baseReqVo.setStatus(0);
@@ -53,13 +53,14 @@ public class CinemaController {
     }
 
     @RequestMapping("getCinemas")
-    public BaseReqVo getCinemas(Integer brandId,Integer hallType,Integer areaId,Integer pageSize,
+    public BaseReqVo getCinemas(Integer brandId,Integer halltypeId,Integer areaId,Integer pageSize,
                                 Integer nowPage){
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
-        if(brandId==null||hallType==null||areaId==null||pageSize==null||nowPage==null){
+        if(brandId==null||halltypeId==null||areaId==null||pageSize==null||nowPage==null){
             return baseReqVo.queryFail();
         }
-        CinemaListVO cinemaListVO = cinemaService.getCinemas(brandId,hallType,areaId,pageSize,nowPage);
+        CinemaListVO cinemaListVO = cinemaService.getCinemas(brandId,halltypeId,areaId,pageSize,
+                nowPage);
         baseReqVo.setData(cinemaListVO.getCinemaVO());
         baseReqVo.setStatus(0);
         baseReqVo.setImgPre("http://img.meetingshop.cn/");
