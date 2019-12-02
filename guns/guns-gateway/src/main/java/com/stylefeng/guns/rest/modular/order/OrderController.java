@@ -59,9 +59,13 @@ public class OrderController {
     }
 
     @RequestMapping("getPayInfo")
-    public BaseReqVo getPayInfo(String orderId){
+    public BaseReqVo getPayInfo(String orderId,HttpServletRequest request){
         BaseReqVo baseReqVo = alipayService.getPayInfo(orderId);
+        String serverName = request.getServerName();
+        int serverPort = request.getServerPort();
+        String imgPre = "http://" + serverName + ":" + serverPort + "/";
+        baseReqVo.setImgPre(imgPre);
         return baseReqVo;
     }
 }
- 
+
