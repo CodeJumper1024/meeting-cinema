@@ -1,7 +1,6 @@
 package com.stylefeng.guns.rest.modular.order;
 
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.mysql.cj.x.protobuf.MysqlxCrud;
 import com.stylefeng.guns.rest.BaseReqVo;
 import com.stylefeng.guns.rest.config.properties.JwtProperties;
 import com.stylefeng.guns.rest.order.OrderService;
@@ -18,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("order")
 public class OrderController {
 
-    @Reference(interfaceClass = OrderService.class, check = false)
+    @Reference(interfaceClass = OrderService.class, check = false, timeout = 5000)
     OrderService orderService;
 
     @Autowired
