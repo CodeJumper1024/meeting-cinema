@@ -105,7 +105,8 @@ public class CinemaServiceImpl implements CinemaService {
     }
 
     @Override
-    public CinemaListVO getCinemas(Integer brandId, Integer halltypeId, Integer areaId,
+    public CinemaListVO getCinemas(Integer brandId, Integer halltypeId,
+                                   Integer hallType, Integer areaId,
                                    Integer pageSize, Integer nowPage) {
         List<CinemaVO> list = new ArrayList<>();
         CinemaListVO cinemaListVO = new CinemaListVO();
@@ -113,11 +114,14 @@ public class CinemaServiceImpl implements CinemaService {
         if(brandId!=99){
             entityWrapper.eq("brand_id",brandId);
         }
-        if(halltypeId!=99){
+        if(areaId!=99){
             entityWrapper.eq("area_id",areaId);
         }
-        if(areaId!=99){
-            entityWrapper.like("hall_ids","#"+halltypeId+"#");
+        if(hallType!=null && hallType!=99){
+            entityWrapper.like("hall_ids", "#" + hallType + "#");
+        }
+        if(halltypeId!=null && halltypeId!=99){
+            entityWrapper.like("hall_ids", "#" + halltypeId + "#");
         }
         Page<MtimeCinemaT> page = new Page<>(nowPage,pageSize);
         List<MtimeCinemaT> mtimeCinemaTS = mtimeCinemaTMapper.selectPage(page,entityWrapper);

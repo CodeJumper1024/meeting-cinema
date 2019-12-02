@@ -16,7 +16,8 @@ public interface CinemaService {
 
     List<HalltypeVO> getHallTypesById(Integer hallType);
 
-    CinemaListVO getCinemas(Integer brandId, Integer hallType, Integer areaId, Integer pageSize,
+    CinemaListVO getCinemas(Integer brandId, Integer halltypeId,Integer hallType, Integer areaId,
+                            Integer pageSize,
                             Integer nowPage);
 
     BaseReqVo getFields(Integer cinemaId);
