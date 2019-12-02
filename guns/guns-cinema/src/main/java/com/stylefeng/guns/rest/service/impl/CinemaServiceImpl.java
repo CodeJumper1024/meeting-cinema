@@ -190,7 +190,7 @@ public class CinemaServiceImpl implements CinemaService {
 
     //获取当前影院信息
     @Override
-    public BaseReqVo getFieldInfo(Integer cinemaId, Integer fieldId) {
+    public BaseReqVo getFieldInfo(Integer cinemaId, Integer fieldId, String soldSeats) {
         BaseReqVo<Map> baseReqVo = new BaseReqVo<>();
         //获取影院信息
         HashMap<String, Object> dataMap = new HashMap<>();
@@ -206,6 +206,7 @@ public class CinemaServiceImpl implements CinemaService {
         dataMap.put("filmInfo", filmInfo);
         //获取影院信息
         HallInfoVo hallInfo = getHallInfoVo(fieldId);
+        hallInfo.setSoldSeats(soldSeats);
         dataMap.put("hallInfo", hallInfo);
         baseReqVo.setData(dataMap);
         baseReqVo.setStatus(0);
@@ -228,7 +229,6 @@ public class CinemaServiceImpl implements CinemaService {
         MtimeHallDictT hallDictT = mtimeHallDictTMapper.selectOne(mtimeHallDictT);
         HallInfoVo hallInfoVo = new HallInfoVo();
         hallInfoVo.setDiscountPrice("");
-        hallInfoVo.setSoldSeats("50");//后面需要联合订单查询
         hallInfoVo.setHallFieldId(fieldInfo.getUuid());
         hallInfoVo.setHallName(fieldInfo.getHallName());
         hallInfoVo.setPrice(fieldInfo.getPrice());

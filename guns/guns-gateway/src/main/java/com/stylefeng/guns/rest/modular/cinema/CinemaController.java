@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.toolkit.CollectionUtils;
 import com.stylefeng.guns.rest.BaseReqVo;
 import com.stylefeng.guns.rest.cinema.CinemaService;
 import com.stylefeng.guns.rest.cinema.vo.*;
+import com.stylefeng.guns.rest.order.OrderService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,6 +21,10 @@ import java.util.List;
 public class CinemaController {
     @Reference(interfaceClass = CinemaService.class, check = false)
     CinemaService cinemaService;
+
+    @Reference(interfaceClass = OrderService.class, check = false)
+    OrderService orderService;
+
     @RequestMapping("getFields")
     public BaseReqVo getFields(Integer cinemaId){
         BaseReqVo baseReqVo = cinemaService.getFields(cinemaId);
@@ -28,7 +33,8 @@ public class CinemaController {
 
     @RequestMapping("getFieldInfo")
     public BaseReqVo getFieldInfo(Integer cinemaId, Integer fieldId){
-        BaseReqVo baseReqVo = cinemaService.getFieldInfo(cinemaId, fieldId);
+        String soldSeats = orderService.getSoldSeats(fieldId);
+        BaseReqVo baseReqVo = cinemaService.getFieldInfo(cinemaId, fieldId, soldSeats);
         return baseReqVo;
     }
 

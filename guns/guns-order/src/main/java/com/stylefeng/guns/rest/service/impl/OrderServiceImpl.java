@@ -57,11 +57,11 @@ public class OrderServiceImpl implements OrderService {
             String[] strings = seatsIdStr.split(",");
             for (String string : strings) {
                 if (seatId.equals(string)) {
-                    return false;
+                    return true;
                 }
             }
         }
-        return true;
+        return false;
     }
 
     @Override
@@ -111,6 +111,16 @@ public class OrderServiceImpl implements OrderService {
     public int getCinemaIdbyOrderId(String OrderId) {
         int cinemaId = orderTMapper.getCinemaIdbyOrderId(OrderId);
         return cinemaId;
+    }
+
+    public String getSoldSeats(Integer fieldId) {
+        String fieldId_s = Integer.toHexString(fieldId);
+        List<String> seatsIdsStr = orderTMapper.selectOrderSeatsIdsByFieldId(fieldId_s);
+        StringBuffer stringBuffer = new StringBuffer();
+        for (String s : seatsIdsStr) {
+            stringBuffer.append(s).append(",");
+        }
+        return stringBuffer.toString();
     }
 
 }

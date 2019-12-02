@@ -14,4 +14,6 @@ public interface OrderService {
 
     int getCinemaIdbyOrderId(String OrderId);
 
+    String getSoldSeats(Integer fieldId);
+
 }

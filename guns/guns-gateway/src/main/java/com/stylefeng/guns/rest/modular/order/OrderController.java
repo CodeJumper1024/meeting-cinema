@@ -47,11 +47,13 @@ public class OrderController {
                 isSoldSeats = orderService.isSoldSeats(fieldId, seatId);
             }
         }
-        if (isSoldSeats) {
+        if (!isSoldSeats) {
             OrderVo orderVo = orderService.saveOrderInfo(fieldId, soldSeats, seatsName, userId);
             baseReqVo.setStatus(0);
             baseReqVo.setData(orderVo);
-            baseReqVo.setMsg("");
+        } else {
+            baseReqVo.setStatus(1);
+            baseReqVo.setMsg("该座位已被购买");
         }
         return baseReqVo;
     }
@@ -62,3 +64,4 @@ public class OrderController {
         return baseReqVo;
     }
 }
+ 
