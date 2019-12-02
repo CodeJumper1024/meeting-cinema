@@ -102,6 +102,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public double getOrderPriceById(String OrderId) {
+        double orderPrice = orderTMapper.getOrderPriceById(OrderId);
+        return orderPrice;
+    }
+
+    @Override
+    public int getCinemaIdbyOrderId(String OrderId) {
+        int cinemaId = orderTMapper.getCinemaIdbyOrderId(OrderId);
+        return cinemaId;
+    }
+
     public String getSoldSeats(Integer fieldId) {
         String fieldId_s = Integer.toHexString(fieldId);
         List<String> seatsIdsStr = orderTMapper.selectOrderSeatsIdsByFieldId(fieldId_s);
@@ -111,4 +122,5 @@ public class OrderServiceImpl implements OrderService {
         }
         return stringBuffer.toString();
     }
+
 }

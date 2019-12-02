@@ -2,6 +2,7 @@ package com.stylefeng.guns.rest.modular.order;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.stylefeng.guns.rest.BaseReqVo;
+import com.stylefeng.guns.rest.alipay.AlipayService;
 import com.stylefeng.guns.rest.config.properties.JwtProperties;
 import com.stylefeng.guns.rest.order.OrderService;
 import com.stylefeng.guns.rest.order.vo.OrderVo;
@@ -25,6 +26,9 @@ public class OrderController {
 
     @Autowired
     RedisTemplate redisTemplate;
+
+    @Reference(interfaceClass = AlipayService.class, check = false)
+    AlipayService alipayService;
 
     @PostMapping("buyTickets")
     public BaseReqVo ticketsBuying(String fieldId, String soldSeats, String seatsName, HttpServletRequest request) {
@@ -51,6 +55,12 @@ public class OrderController {
             baseReqVo.setStatus(1);
             baseReqVo.setMsg("该座位已被购买");
         }
+        return baseReqVo;
+    }
+
+    @RequestMapping("getPayInfo")
+    public BaseReqVo getPayInfo(String orderId){
+        BaseReqVo baseReqVo = alipayService.getPayInfo(orderId);
         return baseReqVo;
     }
 }
