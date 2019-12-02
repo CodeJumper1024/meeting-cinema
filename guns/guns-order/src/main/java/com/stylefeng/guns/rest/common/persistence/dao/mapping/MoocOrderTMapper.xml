@@ -17,7 +17,7 @@
         <result column="order_status" property="orderStatus" />
     </resultMap>
     <select id="selectOrderSeatsIdsByFieldId" resultType="java.lang.String">
-        select seats_ids from mooc_order_t where field_id = #{fieldId}
+        select seats_ids from mooc_order_t where field_id = #{fieldId} and order_status != 2
     </select>
     <insert id="insertOrder">
         insert into mooc_order_t
