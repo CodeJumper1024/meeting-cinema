@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stylefeng.guns.rest.common.persistence.dao.MtimeHallDictTMapper">
+
+    <select id="selectJsonById" resultType="java.lang.String">
+        select seat_address from mtime_hall_dict_t where uuid = #{hallId}
+    </select>
+
+</mapper>
