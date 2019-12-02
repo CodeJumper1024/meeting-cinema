@@ -66,11 +66,11 @@ public class OrderServiceImpl implements OrderService {
             String[] strings = seatsIdStr.split(",");
             for (String string : strings) {
                 if (seatId.equals(string)) {
-                    return false;
+                    return true;
                 }
             }
         }
-        return true;
+        return false;
     }
 
     @Override
@@ -155,6 +155,10 @@ public class OrderServiceImpl implements OrderService {
             //获取放映影院名称
             Integer cinemaId = moocOrderT.getCinemaId();
             orderVo.setCinemaName(mtimeCinemaTMapper.selectCinemaNameById(cinemaId));
+
+            //获取座位号
+            String seatsName = moocOrderT.getSeatsName();
+            orderVo.setSeatsName(seatsName);
             list.add(orderVo);
         }
         orderListVo.setTotal(count);
@@ -162,4 +166,13 @@ public class OrderServiceImpl implements OrderService {
         return orderListVo;
     }
 
+    public String getSoldSeats(Integer fieldId) {
+        String fieldId_s = Integer.toHexString(fieldId);
+        List<String> seatsIdsStr = orderTMapper.selectOrderSeatsIdsByFieldId(fieldId_s);
+        StringBuffer stringBuffer = new StringBuffer();
+        for (String s : seatsIdsStr) {
+            stringBuffer.append(s).append(",");
+        }
+        return stringBuffer.toString();
+    }
 }

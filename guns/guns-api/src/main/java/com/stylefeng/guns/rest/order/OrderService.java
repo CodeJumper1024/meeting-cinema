@@ -12,4 +12,7 @@ public interface OrderService {
     OrderVo saveOrderInfo(String fieldId, String soldSeats, String seatsName, Integer userId);
 
     OrderListVo getOrderByUserId(Integer userId, Integer nowPage, Integer pageSize);
+
+    String getSoldSeats(Integer fieldId);
+
 }
