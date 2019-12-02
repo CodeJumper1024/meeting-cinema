@@ -100,4 +100,15 @@ public class OrderServiceImpl implements OrderService {
         orderVo.setSeatsName(seatsName);
         return orderVo;
     }
+
+    @Override
+    public String getSoldSeats(Integer fieldId) {
+        String fieldId_s = Integer.toHexString(fieldId);
+        List<String> seatsIdsStr = orderTMapper.selectOrderSeatsIdsByFieldId(fieldId_s);
+        StringBuffer stringBuffer = new StringBuffer();
+        for (String s : seatsIdsStr) {
+            stringBuffer.append(s).append(",");
+        }
+        return stringBuffer.toString();
+    }
 }
