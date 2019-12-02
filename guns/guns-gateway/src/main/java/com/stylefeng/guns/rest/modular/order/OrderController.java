@@ -70,7 +70,7 @@ public class OrderController {
         if(total%pageSize!=0){
             pages++;
         }
-        baseReqVo.setData(orderListVo.getTotal());
+        baseReqVo.setData(orderListVo.getOrderVoList());
         baseReqVo.setTotalPage(pages+"");
         baseReqVo.setNowPage(nowPage+"");
         baseReqVo.setImgPre("");

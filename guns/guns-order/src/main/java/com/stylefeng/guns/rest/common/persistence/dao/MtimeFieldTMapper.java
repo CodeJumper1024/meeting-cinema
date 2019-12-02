@@ -11,4 +11,6 @@ public interface MtimeFieldTMapper {
     int selectFilmIdById(@Param("fieldId") String fieldId);
 
     Double selectPriceById(@Param("fieldId") String fieldId);
+
+    String selectFieldBeginTimeById(Integer fieldId);
 }
