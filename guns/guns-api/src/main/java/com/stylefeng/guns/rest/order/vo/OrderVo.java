@@ -2,8 +2,12 @@ package com.stylefeng.guns.rest.order.vo;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class OrderVo {
+public class OrderVo implements Serializable {
+
+    private static final long serialVersionUID = -8296987274259941723L;
 
     String cinemaName;
 

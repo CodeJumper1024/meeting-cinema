@@ -18,5 +18,8 @@
         <result column="film_time" property="filmTime" />
         <result column="film_status" property="filmStatus" />
     </resultMap>
+    <select id="selectFilmNameById" resultType="java.lang.String">
+        select film_name from mtime_film_t where uuid = #{filmId}
+    </select>
 
 </mapper>

@@ -1,6 +1,7 @@
 package com.stylefeng.guns.rest.modular.user;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.rest.BaseReqVo;
 import com.stylefeng.guns.rest.config.properties.JwtProperties;
 import com.stylefeng.guns.rest.user.UserServiceAPI;
@@ -103,6 +104,8 @@ public class UserController {
         BaseReqVo baseReqVo = new BaseReqVo();
         String requestHeader = request.getHeader(jwtProperties.getHeader());
         String token = requestHeader.substring(7);
+        Object o = redisTemplate.opsForValue().get(token);
+        if (o == null) return baseReqVo;
         Boolean delete = redisTemplate.delete(token);
         if (delete) {
             //token删除成功
