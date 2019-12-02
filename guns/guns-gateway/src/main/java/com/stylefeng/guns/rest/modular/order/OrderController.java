@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("order")
 public class OrderController {
 
-    @Reference(interfaceClass = OrderService.class, check = false)
+    @Reference(interfaceClass = OrderService.class, check = false, timeout = 5000)
     OrderService orderService;
 
     @Autowired
