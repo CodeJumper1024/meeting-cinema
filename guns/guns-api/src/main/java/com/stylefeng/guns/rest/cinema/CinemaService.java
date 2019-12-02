@@ -22,8 +22,6 @@ public interface CinemaService {
 
     BaseReqVo getFields(Integer cinemaId);
 
-    BaseReqVo getFieldInfo(Integer cinemaId, Integer fieldId);
-
     String getCinemaNameById(int cinemaId);
 
     BaseReqVo getFieldInfo(Integer cinemaId, Integer fieldId, String soldSeats);
