@@ -117,29 +117,30 @@ public class OrderServiceImpl implements OrderService {
 
         Page page = new Page(nowPage, pageSize);
         EntityWrapper<MoocOrderT> entityWrapper = new EntityWrapper<>();
-        entityWrapper.eq("order_user",userId);
+        entityWrapper.eq("order_user", userId);
         List<MoocOrderT> moocOrderTS = moocOrderTMapper.selectPage(page, entityWrapper);
-        if(CollectionUtils.isEmpty(moocOrderTS)){
+        if (CollectionUtils.isEmpty(moocOrderTS)) {
             return orderListVo;
         }
         Integer count = moocOrderTMapper.selectCount(entityWrapper);
-        for(MoocOrderT moocOrderT : moocOrderTS){
+        for (MoocOrderT moocOrderT : moocOrderTS) {
             OrderVo orderVo = new OrderVo();
             orderVo.setOrderId(moocOrderT.getUuid());
-            orderVo.setOrderPrice(moocOrderT.getOrderPrice()+"");
+            orderVo.setOrderPrice(moocOrderT.getOrderPrice() + "");
 
             //获得下单时间
             Date date = moocOrderT.getOrderTime();
             long longTime = date.getTime();
-            orderVo.setOrderTimestamp(longTime+"");
+            String longTime1 = (longTime+"").substring(0,10);
+            orderVo.setOrderTimestamp(longTime1);
 
             //获得订单状态
             Integer orderStatus = moocOrderT.getOrderStatus();
-            if(orderStatus==0){
+            if (orderStatus == 0) {
                 orderVo.setOrderStatus("待支付");
-            }else if(orderStatus==1){
+            } else if (orderStatus == 1) {
                 orderVo.setOrderStatus("已支付");
-            }else if(orderStatus==2){
+            } else if (orderStatus == 2) {
                 orderVo.setOrderStatus("已关闭");
             }
 
@@ -164,6 +165,16 @@ public class OrderServiceImpl implements OrderService {
         orderListVo.setTotal(count);
         orderListVo.setOrderVoList(list);
         return orderListVo;
+    }
+    public double getOrderPriceById(String OrderId) {
+        double orderPrice = orderTMapper.getOrderPriceById(OrderId);
+        return orderPrice;
+    }
+
+    @Override
+    public int getCinemaIdbyOrderId(String OrderId) {
+        int cinemaId = orderTMapper.getCinemaIdbyOrderId(OrderId);
+        return cinemaId;
     }
 
     public String getSoldSeats(Integer fieldId) {

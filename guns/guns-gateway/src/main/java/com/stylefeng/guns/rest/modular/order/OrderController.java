@@ -2,6 +2,7 @@ package com.stylefeng.guns.rest.modular.order;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.stylefeng.guns.rest.BaseReqVo;
+import com.stylefeng.guns.rest.alipay.AlipayService;
 import com.stylefeng.guns.rest.config.properties.JwtProperties;
 import com.stylefeng.guns.rest.order.OrderService;
 import com.stylefeng.guns.rest.order.vo.OrderListVo;
@@ -26,6 +27,9 @@ public class OrderController {
 
     @Autowired
     RedisTemplate redisTemplate;
+
+    @Reference(interfaceClass = AlipayService.class, check = false)
+    AlipayService alipayService;
 
     @PostMapping("buyTickets")
     public BaseReqVo ticketsBuying(String fieldId, String soldSeats, String seatsName, HttpServletRequest request) {
@@ -56,28 +60,33 @@ public class OrderController {
     }
 
     @PostMapping("getOrderInfo")
-    public BaseReqVo getOrderInfo(Integer nowPage,Integer pageSize,HttpServletRequest request){
+    public BaseReqVo getOrderInfo(Integer nowPage,Integer pageSize,HttpServletRequest request) {
         BaseReqVo baseReqVo = new BaseReqVo();
 
         String header = request.getHeader(jwtProperties.getHeader());
         String token = header.substring(7);
         Integer userId = (Integer) redisTemplate.opsForValue().get(token);
 
-        OrderListVo orderListVo = orderService.getOrderByUserId(userId,nowPage,pageSize);
-        if(orderListVo.getOrderVoList().size()==0){
+        OrderListVo orderListVo = orderService.getOrderByUserId(userId, nowPage, pageSize);
+        if (orderListVo.getOrderVoList().size() == 0) {
             return baseReqVo.queryFail();
         }
-        long total =  orderListVo.getTotal();
-        long pages = total/pageSize;
-        if(total%pageSize!=0){
+        long total = orderListVo.getTotal();
+        long pages = total / pageSize;
+        if (total % pageSize != 0) {
             pages++;
         }
         baseReqVo.setData(orderListVo.getOrderVoList());
-        baseReqVo.setTotalPage(pages+"");
-        baseReqVo.setNowPage(nowPage+"");
+        baseReqVo.setTotalPage(pages + "");
+        baseReqVo.setNowPage(nowPage + "");
         baseReqVo.setImgPre("");
         baseReqVo.setStatus(0);
         baseReqVo.setMsg("");
+        return baseReqVo;
+    }
+    @RequestMapping("getPayInfo")
+    public BaseReqVo getPayInfo(String orderId){
+        BaseReqVo baseReqVo = alipayService.getPayInfo(orderId);
         return baseReqVo;
     }
 }

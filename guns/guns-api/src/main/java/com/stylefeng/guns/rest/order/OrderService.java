@@ -13,6 +13,10 @@ public interface OrderService {
 
     OrderListVo getOrderByUserId(Integer userId, Integer nowPage, Integer pageSize);
 
+    double getOrderPriceById(String OrderId);
+
+    int getCinemaIdbyOrderId(String OrderId);
+
     String getSoldSeats(Integer fieldId);
 
 }
