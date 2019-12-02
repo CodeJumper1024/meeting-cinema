@@ -57,11 +57,11 @@ public class OrderServiceImpl implements OrderService {
             String[] strings = seatsIdStr.split(",");
             for (String string : strings) {
                 if (seatId.equals(string)) {
-                    return false;
+                    return true;
                 }
             }
         }
-        return true;
+        return false;
     }
 
     @Override
