@@ -100,4 +100,17 @@ public class OrderServiceImpl implements OrderService {
         orderVo.setSeatsName(seatsName);
         return orderVo;
     }
+
+    @Override
+    public double getOrderPriceById(String OrderId) {
+        double orderPrice = orderTMapper.getOrderPriceById(OrderId);
+        return orderPrice;
+    }
+
+    @Override
+    public int getCinemaIdbyOrderId(String OrderId) {
+        int cinemaId = orderTMapper.getCinemaIdbyOrderId(OrderId);
+        return cinemaId;
+    }
+
 }

@@ -27,4 +27,12 @@
         #{userId})
     </insert>
 
+    <select id="getOrderPriceById" resultType="double">
+        select order_price from mooc_order_t where UUID = #{orderId}
+    </select>
+
+    <select id="getCinemaIdbyOrderId" resultType="int">
+        select cinema_id from mooc_order_t where UUID = #{orderId}
+    </select>
+
 </mapper>

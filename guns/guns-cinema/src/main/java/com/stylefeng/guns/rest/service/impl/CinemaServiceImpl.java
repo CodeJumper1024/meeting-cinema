@@ -213,6 +213,12 @@ public class CinemaServiceImpl implements CinemaService {
         return baseReqVo;
     }
 
+    @Override
+    public String getCinemaNameById(int cinemaId) {
+        String cinemaName = mtimeCinemaTMapper.getCinemaNameById(cinemaId);
+        return cinemaName;
+    }
+
     private HallInfoVo getHallInfoVo(Integer fieldId) {
         MtimeFieldT mtimeFieldT = new MtimeFieldT();
         mtimeFieldT.setUuid(fieldId);
