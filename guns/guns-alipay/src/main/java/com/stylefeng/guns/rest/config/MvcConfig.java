@@ -13,9 +13,4 @@ public class MvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
     }
 
-    @Bean("multipartResolver")
-    public CommonsMultipartResolver multipartResolver(){
-        return new CommonsMultipartResolver();
-    }
-
 }
