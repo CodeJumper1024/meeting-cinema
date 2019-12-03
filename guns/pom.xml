@@ -9,6 +9,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>guns-promo</module>
         <module>guns-order</module>
         <module>guns-admin</module>
         <module>guns-core</module>

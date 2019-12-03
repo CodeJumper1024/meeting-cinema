@@ -19,10 +19,10 @@ import java.util.List;
 @RestController
 @RequestMapping("cinema/")
 public class CinemaController {
-    @Reference(interfaceClass = CinemaService.class, check = false)
+    @Reference(interfaceClass = CinemaService.class, check = false, timeout = 10000000)
     CinemaService cinemaService;
 
-    @Reference(interfaceClass = OrderService.class, check = false)
+    @Reference(interfaceClass = OrderService.class, check = false, timeout = 10000000)
     OrderService orderService;
 
     @RequestMapping("getFields")
