@@ -48,24 +48,38 @@ public class AuthFilter extends OncePerRequestFilter {
         //获得请求的path
         String path = request.getServletPath();
 
+        //获得请求头的Authorization字段，为了接下来获得请求头的token信息
+        //无论请求是否会被filter拦截，在token存在且未过期的情况下都要更新token和用户信息的缓存时间
+        final String requestHeader = request.getHeader(jwtProperties.getHeader());
+        String authToken = null;
+
         for (String  ignore: ignores) {
             if(path.contains(ignore)){
                 //请求的path是会被filter放行的路径是，不拦截
+                //查看被放行的请求是否带有token，如果有且未过期，则刷新时间
+                if (requestHeader != null && requestHeader.startsWith("Bearer ")){
+                    //获得token
+                    authToken = requestHeader.substring(7);
+                    Object o = redisTemplate.opsForValue().get(authToken);
+                    if(o != null){
+                        //请求头携带的token未过期，刷新token和用户信息的缓存时间
+                        redisTemplate.expire(authToken,5*60, TimeUnit.SECONDS);
+                    }
+                }
                 chain.doFilter(request, response);
                 return;
             }
         }
 
-        //下面是token验证的操作
-        final String requestHeader = request.getHeader(jwtProperties.getHeader());
-        String authToken = null;
+        //对于被拦截的操作，要进行token验证
         if (requestHeader != null && requestHeader.startsWith("Bearer ")) {
+            //请求头带上了token,获取token
             authToken = requestHeader.substring(7);
             //验证token是否过期,以redis里面token是否过期为准（不以请求头中token为准）,包含了验证jwt是否正确
             try {
                 Object o = redisTemplate.opsForValue().get(authToken);
                 if(o != null){
-                    //token信息存在
+                    //redis中token对应的用户信息(用户id)存在,说明token未过期
                     //刷新token和用户信息的缓存时间
                     redisTemplate.expire(authToken,5*60, TimeUnit.SECONDS);
                 }else{
@@ -79,7 +93,7 @@ public class AuthFilter extends OncePerRequestFilter {
                 return;
             }
         } else {
-            //header没有带Bearer字段
+            //header没有带Bearer字段 请求头没有带上token
             RenderUtil.renderJson(response, new ErrorTip(BizExceptionEnum.TOKEN_ERROR.getCode(), BizExceptionEnum.TOKEN_ERROR.getMessage()));
             return;
         }
