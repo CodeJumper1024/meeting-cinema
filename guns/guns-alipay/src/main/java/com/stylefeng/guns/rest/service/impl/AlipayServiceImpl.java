@@ -1,27 +1,37 @@
 package com.stylefeng.guns.rest.service.impl;
+import java.util.Date;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alipay.api.AlipayResponse;
+import com.alipay.api.domain.TradeFundBill;
 import com.alipay.api.response.AlipayTradePrecreateResponse;
+import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.alipay.demo.trade.config.Configs;
 import com.alipay.demo.trade.model.ExtendParams;
 import com.alipay.demo.trade.model.GoodsDetail;
 import com.alipay.demo.trade.model.builder.AlipayTradePrecreateRequestBuilder;
+import com.alipay.demo.trade.model.builder.AlipayTradeQueryRequestBuilder;
 import com.alipay.demo.trade.model.result.AlipayF2FPrecreateResult;
+import com.alipay.demo.trade.model.result.AlipayF2FQueryResult;
 import com.alipay.demo.trade.service.AlipayMonitorService;
 import com.alipay.demo.trade.service.AlipayTradeService;
 import com.alipay.demo.trade.service.impl.AlipayMonitorServiceImpl;
 import com.alipay.demo.trade.service.impl.AlipayTradeServiceImpl;
 import com.alipay.demo.trade.service.impl.AlipayTradeWithHBServiceImpl;
+import com.alipay.demo.trade.utils.Utils;
 import com.alipay.demo.trade.utils.ZxingUtils;
 import com.stylefeng.guns.rest.BaseReqVo;
 import com.stylefeng.guns.rest.alipay.AlipayService;
+import com.stylefeng.guns.rest.alipay.vo.GetPayResultVo;
 import com.stylefeng.guns.rest.cinema.CinemaService;
+import com.stylefeng.guns.rest.common.persistence.dao.MoocOrderTMapper;
+import com.stylefeng.guns.rest.common.persistence.model.MoocOrderT;
 import com.stylefeng.guns.rest.order.OrderService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -39,6 +49,8 @@ public class AlipayServiceImpl implements AlipayService{
 
     @Reference(interfaceClass = CinemaService.class, check = false)
     CinemaService cinemaService;
+    @Autowired
+    MoocOrderTMapper moocOrderTMapper;
 
     private static Log log = LogFactory.getLog(AlipayServiceImpl.class);
 
@@ -141,12 +153,13 @@ public class AlipayServiceImpl implements AlipayService{
                 .setGoodsDetailList(goodsDetailList);
 
         AlipayF2FPrecreateResult result = tradeService.tradePrecreate(builder);
-        File file = new File("D:\\zfb");
+        File file = new File("D:\\meeting\\qrcode");
         if(!file.exists()){
             file.mkdirs();
         }
         int status = 0;
         String filePath = null;
+        String key = null;
         switch (result.getTradeStatus()) {
             case SUCCESS:
                 log.info("支付宝预下单成功: )");
@@ -154,7 +167,9 @@ public class AlipayServiceImpl implements AlipayService{
                 AlipayTradePrecreateResponse response = result.getResponse();
                 dumpResponse(response);
 
-                // 需要修改为运行机器上的路径
+                // 需要修改为运行机器上的路径  生成二维码
+                // key是文件名
+                key = String.format("qr-%s.png", response.getOutTradeNo());
                 filePath = String.format("D:\\zfb\\qr-%s.png", response.getOutTradeNo());
                 log.info("filePath:" + filePath);
                 ZxingUtils.getQRCodeImge(response.getQrCode(), 256, filePath);
@@ -181,9 +196,9 @@ public class AlipayServiceImpl implements AlipayService{
         if(status == 0){
             Map<String, String> dataMap = new HashMap<>();
             dataMap.put("orderId",orderId);
-            dataMap.put("qRCodeAddress",filePath);
+            dataMap.put("qRCodeAddress","qRCode/" + key);
             baseReqVo.setStatus(0);
-            baseReqVo.setImgPre("");
+            baseReqVo.setImgPre(null);
             baseReqVo.setData(dataMap);
         }else if(status == 1){
             baseReqVo.setStatus(1);
@@ -195,6 +210,80 @@ public class AlipayServiceImpl implements AlipayService{
         }
         return baseReqVo;
 
+    }
+
+    @Override
+    public GetPayResultVo getPayResult(String orderId) {
+        MoocOrderT moocOrderT=new MoocOrderT();
+        moocOrderT.setUuid(orderId);
+        moocOrderT.setOrderStatus(1);
+        GetPayResultVo getPayResultVo = new GetPayResultVo();
+        // (必填) 商户订单号，通过此商户订单号查询当面付的交易状态
+        String outTradeNo = "tradeprecreate" + orderId;
+
+        // 创建查询请求builder，设置请求参数
+        AlipayTradeQueryRequestBuilder builder = new AlipayTradeQueryRequestBuilder()
+                .setOutTradeNo(outTradeNo);
+
+        AlipayF2FQueryResult result = tradeService.queryTradeResult(builder);
+        switch (result.getTradeStatus()) {
+            case SUCCESS:
+                log.info("查询返回该订单支付成功: )");
+
+                AlipayTradeQueryResponse response = result.getResponse();
+                dumpResponse(response);
+
+                log.info(response.getTradeStatus());
+                if (Utils.isListNotEmpty(response.getFundBillList())) {
+                    for (TradeFundBill bill : response.getFundBillList()) {
+                        log.info(bill.getFundChannel() + ":" + bill.getAmount());
+                    }
+                }
+                Integer result1 = moocOrderTMapper.updateStateById(orderId);
+                if(result1>0){
+                    getPayResultVo.setOrderId(orderId);
+                    getPayResultVo.setOrderStatus(moocOrderT.getOrderStatus());
+                    getPayResultVo.setOrderMsg("支付成功");
+                }else{
+                    getPayResultVo.setOrderId(orderId);
+                    getPayResultVo.setOrderStatus(moocOrderT.getOrderStatus());
+                    getPayResultVo.setOrderMsg("支付失败");
+                }
+
+                break;
+
+            case FAILED:
+                log.error("查询返回该订单支付失败或被关闭!!!");
+                getPayResultVo.setOrderId(orderId);
+                getPayResultVo.setOrderStatus(0);
+                getPayResultVo.setOrderMsg("支付失败");
+                break;
+
+            case UNKNOWN:
+                log.error("系统异常，订单支付状态未知!!!");
+                getPayResultVo.setOrderId(orderId);
+                getPayResultVo.setOrderStatus(0);
+                getPayResultVo.setOrderMsg("支付失败");
+                break;
+
+            default:
+                log.error("不支持的交易状态，交易返回异常!!!");
+                getPayResultVo.setOrderId(orderId);
+                getPayResultVo.setOrderStatus(0);
+                getPayResultVo.setOrderMsg("支付失败");
+                break;
+        }
+        return getPayResultVo;
+    }
+
+    @Override
+    public GetPayResultVo updateFail(String orderId) {
+        MoocOrderT moocOrderT=new MoocOrderT();
+        moocOrderT.setUuid(orderId);
+        moocOrderT.setOrderStatus(2);
+        GetPayResultVo getPayResultVo = new GetPayResultVo();
+        moocOrderTMapper.updateById(moocOrderT);
+        return getPayResultVo;
     }
 
 }
