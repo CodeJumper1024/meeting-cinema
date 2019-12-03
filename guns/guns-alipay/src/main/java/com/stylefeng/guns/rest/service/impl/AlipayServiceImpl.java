@@ -153,7 +153,7 @@ public class AlipayServiceImpl implements AlipayService{
                 .setGoodsDetailList(goodsDetailList);
 
         AlipayF2FPrecreateResult result = tradeService.tradePrecreate(builder);
-        File file = new File("D:\\meeting\\qrcode");
+        File file = new File("D:\\zfb");
         if(!file.exists()){
             file.mkdirs();
         }
