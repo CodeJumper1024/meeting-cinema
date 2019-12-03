@@ -115,7 +115,7 @@ public class OrderServiceImpl implements OrderService {
         OrderListVo orderListVo = new OrderListVo();
         List<OrderVo> list = new ArrayList<>();
 
-        Page page = new Page(nowPage, pageSize);
+        Page<MoocOrderT> page = new Page<>(nowPage, pageSize,"order_time",false);
         EntityWrapper<MoocOrderT> entityWrapper = new EntityWrapper<>();
         entityWrapper.eq("order_user", userId);
         List<MoocOrderT> moocOrderTS = moocOrderTMapper.selectPage(page, entityWrapper);

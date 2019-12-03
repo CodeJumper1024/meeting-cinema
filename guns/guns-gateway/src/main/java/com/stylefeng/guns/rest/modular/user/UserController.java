@@ -102,16 +102,35 @@ public class UserController {
     @RequestMapping("logout")
     public BaseReqVo logout(HttpServletRequest request) {
         BaseReqVo baseReqVo = new BaseReqVo();
+
+        //获得请求头信息
         String requestHeader = request.getHeader(jwtProperties.getHeader());
-        String token = requestHeader.substring(7);
-        Object o = redisTemplate.opsForValue().get(token);
-        if (o == null) return baseReqVo;
-        Boolean delete = redisTemplate.delete(token);
-        if (delete) {
-            //token删除成功
-            baseReqVo.setStatus(0);
-            baseReqVo.setMsg("成功退出");
+
+        if (requestHeader != null && requestHeader.startsWith("Bearer ")){
+            //请求头中带有token信息
+            String token = requestHeader.substring(7);
+
+            //验证token是否过期,以redis里面token是否过期为准（不以请求头中token为准）
+            Object o = redisTemplate.opsForValue().get(token);
+            if (o == null) {
+                //token已经过期
+                baseReqVo.setStatus(0);
+                baseReqVo.setMsg("成功退出");
+            }else {
+                //token未过期
+                Boolean delete = redisTemplate.delete(token);
+                if (delete) {
+                    //redis中的token和用户信息(uuid)删除成功
+                    baseReqVo.setStatus(0);
+                    baseReqVo.setMsg("成功退出");
+                }else {
+                    //redis中的token和用户信息(uuid)删除失败
+                    baseReqVo.setStatus(999);
+                    baseReqVo.setMsg("系统出现异常，请联系管理员");
+                }
+            }
         } else {
+            //token中不带请求头信息
             baseReqVo.setStatus(1);
             baseReqVo.setMsg("退出失败，用户尚未登陆");
         }
