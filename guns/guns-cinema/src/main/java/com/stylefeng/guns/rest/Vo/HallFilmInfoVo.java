@@ -13,6 +13,7 @@ import java.util.List;
 @Data
 public class HallFilmInfoVo implements Serializable {
 
+    private static final long serialVersionUID = 396271373823250246L;
     private String actors;
     private String filmCats;
     private Integer filmId;

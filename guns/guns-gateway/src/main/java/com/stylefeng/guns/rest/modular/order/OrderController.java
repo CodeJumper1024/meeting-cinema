@@ -3,6 +3,7 @@ package com.stylefeng.guns.rest.modular.order;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.stylefeng.guns.rest.BaseReqVo;
 import com.stylefeng.guns.rest.alipay.AlipayService;
+import com.stylefeng.guns.rest.alipay.vo.GetPayResultVo;
 import com.stylefeng.guns.rest.config.properties.JwtProperties;
 import com.stylefeng.guns.rest.order.OrderService;
 import com.stylefeng.guns.rest.order.vo.OrderListVo;
@@ -93,6 +94,30 @@ public class OrderController {
         int localPort = request.getLocalPort();
         String imgPre = "http://" + localAddr + ":" + localPort + "/";
         baseReqVo.setImgPre(imgPre);
+        return baseReqVo;
+    }
+    @RequestMapping("getPayResult")
+    public BaseReqVo getPayResult(String orderId, Integer tryNums){
+        BaseReqVo baseReqVo=new BaseReqVo();
+        GetPayResultVo getPayResultVo = new GetPayResultVo();
+        if(tryNums==4) {
+            getPayResultVo = alipayService.updateFail(orderId);
+            if (getPayResultVo == null) {
+                return BaseReqVo.queryFail();
+            }
+                baseReqVo.setData(getPayResultVo);
+                baseReqVo.setImgPre("http://img.meetingshop.cn/");
+                baseReqVo.setMsg("失败");
+        }else{
+                getPayResultVo = alipayService.getPayResult(orderId);
+            if (getPayResultVo == null) {
+                return BaseReqVo.queryFail();
+            }
+                baseReqVo.setData(getPayResultVo);
+                baseReqVo.setImgPre("http://img.meetingshop.cn/");
+                baseReqVo.setMsg("成功");
+
+        }
         return baseReqVo;
     }
 }
