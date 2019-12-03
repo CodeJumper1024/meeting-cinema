@@ -2,8 +2,13 @@ package com.stylefeng.guns.rest.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.baomidou.mybatisplus.toolkit.CollectionUtils;
 import com.stylefeng.guns.rest.common.persistence.dao.*;
+import com.stylefeng.guns.rest.common.persistence.model.MoocOrderT;
 import com.stylefeng.guns.rest.order.OrderService;
+import com.stylefeng.guns.rest.order.vo.OrderListVo;
 import com.stylefeng.guns.rest.order.vo.OrderVo;
 import com.stylefeng.guns.rest.utils.ConnectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -24,6 +30,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     MtimeHallDictTMapper mtimeHallDictTMapper;
+
+    @Autowired
+    MoocOrderTMapper moocOrderTMapper;
 
     @Autowired
     MoocOrderTMapper orderTMapper;
@@ -102,6 +111,61 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public OrderListVo getOrderByUserId(Integer userId, Integer nowPage, Integer pageSize) {
+        OrderListVo orderListVo = new OrderListVo();
+        List<OrderVo> list = new ArrayList<>();
+
+        Page page = new Page(nowPage, pageSize);
+        EntityWrapper<MoocOrderT> entityWrapper = new EntityWrapper<>();
+        entityWrapper.eq("order_user", userId);
+        List<MoocOrderT> moocOrderTS = moocOrderTMapper.selectPage(page, entityWrapper);
+        if (CollectionUtils.isEmpty(moocOrderTS)) {
+            return orderListVo;
+        }
+        Integer count = moocOrderTMapper.selectCount(entityWrapper);
+        for (MoocOrderT moocOrderT : moocOrderTS) {
+            OrderVo orderVo = new OrderVo();
+            orderVo.setOrderId(moocOrderT.getUuid());
+            orderVo.setOrderPrice(moocOrderT.getOrderPrice() + "");
+
+            //获得下单时间
+            Date date = moocOrderT.getOrderTime();
+            long longTime = date.getTime();
+            String longTime1 = (longTime+"").substring(0,10);
+            orderVo.setOrderTimestamp(longTime1);
+
+            //获得订单状态
+            Integer orderStatus = moocOrderT.getOrderStatus();
+            if (orderStatus == 0) {
+                orderVo.setOrderStatus("待支付");
+            } else if (orderStatus == 1) {
+                orderVo.setOrderStatus("已支付");
+            } else if (orderStatus == 2) {
+                orderVo.setOrderStatus("已关闭");
+            }
+
+            //获取电影名称
+            Integer filmId = moocOrderT.getFilmId();
+            orderVo.setFilmName(mtimeFilmTMapper.selectFilmNameById(filmId));
+
+            //获取电影的场次详情
+            Integer fieldId = moocOrderT.getFieldId();
+            String beginTime = mtimeFieldTMapper.selectFieldBeginTimeById(fieldId);
+            orderVo.setFieldTime(beginTime);
+
+            //获取放映影院名称
+            Integer cinemaId = moocOrderT.getCinemaId();
+            orderVo.setCinemaName(mtimeCinemaTMapper.selectCinemaNameById(cinemaId));
+
+            //获取座位号
+            String seatsName = moocOrderT.getSeatsName();
+            orderVo.setSeatsName(seatsName);
+            list.add(orderVo);
+        }
+        orderListVo.setTotal(count);
+        orderListVo.setOrderVoList(list);
+        return orderListVo;
+    }
     public double getOrderPriceById(String OrderId) {
         double orderPrice = orderTMapper.getOrderPriceById(OrderId);
         return orderPrice;
@@ -122,5 +186,4 @@ public class OrderServiceImpl implements OrderService {
         }
         return stringBuffer.toString();
     }
-
 }

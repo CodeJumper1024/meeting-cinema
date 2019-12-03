@@ -225,7 +225,7 @@ public class CinemaServiceImpl implements CinemaService {
         mtimeFieldT.setUuid(fieldId);
         MtimeFieldT fieldInfo = mtimeFieldTMapper.selectOne(mtimeFieldT);
         MtimeHallDictT mtimeHallDictT = new MtimeHallDictT();
-        mtimeHallDictT.setShowName(fieldInfo.getHallName());
+        mtimeHallDictT.setUuid(fieldInfo.getHallId());
         MtimeHallDictT hallDictT = mtimeHallDictTMapper.selectOne(mtimeHallDictT);
         HallInfoVo hallInfoVo = new HallInfoVo();
         hallInfoVo.setDiscountPrice("");

@@ -159,6 +159,7 @@ public class AlipayServiceImpl implements AlipayService{
         }
         int status = 0;
         String filePath = null;
+        String key = null;
         switch (result.getTradeStatus()) {
             case SUCCESS:
                 log.info("支付宝预下单成功: )");
@@ -166,7 +167,9 @@ public class AlipayServiceImpl implements AlipayService{
                 AlipayTradePrecreateResponse response = result.getResponse();
                 dumpResponse(response);
 
-                // 需要修改为运行机器上的路径
+                // 需要修改为运行机器上的路径  生成二维码
+                // key是文件名
+                key = String.format("qr-%s.png", response.getOutTradeNo());
                 filePath = String.format("D:\\zfb\\qr-%s.png", response.getOutTradeNo());
                 log.info("filePath:" + filePath);
                 ZxingUtils.getQRCodeImge(response.getQrCode(), 256, filePath);
@@ -193,9 +196,9 @@ public class AlipayServiceImpl implements AlipayService{
         if(status == 0){
             Map<String, String> dataMap = new HashMap<>();
             dataMap.put("orderId",orderId);
-            dataMap.put("qRCodeAddress",filePath);
+            dataMap.put("qRCodeAddress","qRCode/" + key);
             baseReqVo.setStatus(0);
-            baseReqVo.setImgPre("");
+            baseReqVo.setImgPre(null);
             baseReqVo.setData(dataMap);
         }else if(status == 1){
             baseReqVo.setStatus(1);

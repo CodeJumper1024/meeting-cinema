@@ -6,6 +6,7 @@ import com.stylefeng.guns.rest.alipay.AlipayService;
 import com.stylefeng.guns.rest.alipay.vo.GetPayResultVo;
 import com.stylefeng.guns.rest.config.properties.JwtProperties;
 import com.stylefeng.guns.rest.order.OrderService;
+import com.stylefeng.guns.rest.order.vo.OrderListVo;
 import com.stylefeng.guns.rest.order.vo.OrderVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -59,9 +60,40 @@ public class OrderController {
         return baseReqVo;
     }
 
+    @PostMapping("getOrderInfo")
+    public BaseReqVo getOrderInfo(Integer nowPage,Integer pageSize,HttpServletRequest request) {
+        BaseReqVo baseReqVo = new BaseReqVo();
+
+        String header = request.getHeader(jwtProperties.getHeader());
+        String token = header.substring(7);
+        Integer userId = (Integer) redisTemplate.opsForValue().get(token);
+
+        OrderListVo orderListVo = orderService.getOrderByUserId(userId, nowPage, pageSize);
+        if (orderListVo.getOrderVoList().size() == 0) {
+            return baseReqVo.queryFail();
+        }
+        long total = orderListVo.getTotal();
+        long pages = total / pageSize;
+        if (total % pageSize != 0) {
+            pages++;
+        }
+        baseReqVo.setData(orderListVo.getOrderVoList());
+        baseReqVo.setTotalPage(pages + "");
+        baseReqVo.setNowPage(nowPage + "");
+        baseReqVo.setImgPre("");
+        baseReqVo.setStatus(0);
+        baseReqVo.setMsg("");
+        return baseReqVo;
+    }
     @RequestMapping("getPayInfo")
-    public BaseReqVo getPayInfo(String orderId){
+    public BaseReqVo getPayInfo(String orderId,HttpServletRequest request){
         BaseReqVo baseReqVo = alipayService.getPayInfo(orderId);
+        //String serverName = request.getServerName();
+        String localAddr = request.getLocalAddr();
+        //int serverPort = request.getServerPort();
+        int localPort = request.getLocalPort();
+        String imgPre = "http://" + localAddr + ":" + localPort + "/";
+        baseReqVo.setImgPre(imgPre);
         return baseReqVo;
     }
     @RequestMapping("getPayResult")

@@ -15,4 +15,7 @@
         select price from mtime_field_t where uuid = #{fieldId}
     </select>
 
+    <select id="selectFieldBeginTimeById" resultType="string">
+        select begin_time from mtime_field_t where uuid = #{fieldId}
+    </select>
 </mapper>
