@@ -1,5 +1,7 @@
 package com.stylefeng.guns.rest.modular.auth.filter;
 
+import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.stylefeng.guns.core.base.tips.ErrorTip;
 import com.stylefeng.guns.core.util.RenderUtil;
 import com.stylefeng.guns.rest.common.exception.BizExceptionEnum;
@@ -18,6 +20,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -85,6 +88,9 @@ public class AuthFilter extends OncePerRequestFilter {
                 }else{
                     //token不存在或者已经过期
                     //跳转到登录页面
+                    HashMap<Object, Object> hashMap = new HashMap<>();
+                    hashMap.put("status", 700);
+                    response.getWriter().println(JSON.toJSONString(hashMap));
                     return;
                 }
             } catch (JwtException e) {
@@ -94,7 +100,10 @@ public class AuthFilter extends OncePerRequestFilter {
             }
         } else {
             //header没有带Bearer字段 请求头没有带上token
-            RenderUtil.renderJson(response, new ErrorTip(BizExceptionEnum.TOKEN_ERROR.getCode(), BizExceptionEnum.TOKEN_ERROR.getMessage()));
+            //跳转到登录页面
+            HashMap<Object, Object> hashMap = new HashMap<>();
+            hashMap.put("status", 700);
+            response.getWriter().println(JSON.toJSONString(hashMap));
             return;
         }
         chain.doFilter(request, response);
