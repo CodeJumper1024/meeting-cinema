@@ -46,3 +46,11 @@ logging:
   level.com.stylefeng: debug
   path: logs/
   file: guns-promo.log
+
+#promo:
+#  producer:
+#    namesrv-addr: localhost:9876
+#    topic: promoStock
+#  consumer:
+#    namesrv-addr: localhost:9876
+#    topic: promoStock

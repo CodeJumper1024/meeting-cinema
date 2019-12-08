@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.toolkit.CollectionUtils;
 import com.stylefeng.guns.rest.common.persistence.dao.*;
 import com.stylefeng.guns.rest.common.persistence.model.MoocOrderT;
+import com.stylefeng.guns.rest.mq.OrderProducer;
 import com.stylefeng.guns.rest.order.OrderService;
 import com.stylefeng.guns.rest.order.vo.OrderListVo;
 import com.stylefeng.guns.rest.order.vo.OrderVo;
@@ -42,6 +43,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     MtimeFilmTMapper mtimeFilmTMapper;
+
+    @Autowired
+    OrderProducer orderProducer;
 
     @Override
     public Boolean isTrueSeats(String fieldId, String seatId) {
@@ -97,7 +101,9 @@ public class OrderServiceImpl implements OrderService {
         String orderTimestamp = String.valueOf(new Timestamp(System.currentTimeMillis()));
 
         int result = orderTMapper.insertOrder(uuid, cinemaId, fieldId, filmId, soldSeats, seatsName, price, orderPrice, userId);
-
+        if (result > 0){
+            Boolean cancleResult = orderProducer.cancleUnpaidOrder(uuid);
+        }
         OrderVo orderVo = new OrderVo();
         orderVo.setCinemaName(cinemaName);
         orderVo.setFieldTime(fieldTime);

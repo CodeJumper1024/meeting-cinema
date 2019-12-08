@@ -58,18 +58,18 @@ public class EntityGenerator {
         StrategyConfig strategy = new StrategyConfig();
         //strategy.setTablePrefix(new String[]{"_"});// 此处可以修改为您的表前缀
         strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
-        strategy.setInclude(new String[]{"mtime_t"});
+        strategy.setInclude(new String[]{"mtime_promo_stock"});
         mpg.setStrategy(strategy);
 
         // 包配置
         PackageConfig pc = new PackageConfig();
         pc.setParent(null);
-        //pc.setEntity("com.stylefeng.guns.rest.common.persistence.model");
-        //pc.setMapper("com.stylefeng.guns.rest.common.persistence.dao");
-        //pc.setXml("com.stylefeng.guns.rest.common.persistence.dao.mapping");
-        //pc.setService("com.stylefeng.guns.rest.service");       //本项目没用，生成之后删掉
-        //pc.setServiceImpl("com.stylefeng.guns.rest.service.impl");   //本项目没用，生成之后删掉
-        pc.setController("com.stylefeng.guns.rest.modular");    //本项目没用，生成之后删掉
+        pc.setEntity("com.stylefeng.guns.rest.common.persistence.model");
+        pc.setMapper("com.stylefeng.guns.rest.common.persistence.dao");
+        pc.setXml("com.stylefeng.guns.rest.common.persistence.dao.mapping");
+        pc.setService("TTT");       //本项目没用，生成之后删掉
+        pc.setServiceImpl("TTT");   //本项目没用，生成之后删掉
+        pc.setController("TTT");    //本项目没用，生成之后删掉
         mpg.setPackageInfo(pc);
 
         // 注入自定义配置，可以在 VM 中使用 cfg.abc 设置的值

@@ -58,7 +58,8 @@ public class AuthController {
             Integer uuid = userInfo.getUuid();
             //将token和用户信息保存到redis 设置token在redis的保存时间为5分钟
             redisTemplate.opsForValue().set(token,uuid);
-            redisTemplate.expire(token,5*60, TimeUnit.SECONDS);
+            redisTemplate.expire(token,1, TimeUnit.HOURS);
+            System.out.println(token);
 
             //将token和randomkey返回给前端
             Map<String, String> dataMap = new HashMap<>();

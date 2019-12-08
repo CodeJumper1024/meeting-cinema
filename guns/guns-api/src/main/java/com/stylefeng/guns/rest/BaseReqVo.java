@@ -18,6 +18,7 @@ public class BaseReqVo<T> implements Serializable {
         baseReqVo.setMsg("成功");
         return baseReqVo;
     }
+
     public static BaseReqVo queryFail(){
         BaseReqVo baseReqVo = new BaseReqVo();
         baseReqVo.setStatus(1);
