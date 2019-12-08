@@ -66,7 +66,7 @@ public class AuthFilter extends OncePerRequestFilter {
                     Object o = redisTemplate.opsForValue().get(authToken);
                     if(o != null){
                         //请求头携带的token未过期，刷新token和用户信息的缓存时间
-                        redisTemplate.expire(authToken,5*60, TimeUnit.SECONDS);
+                        redisTemplate.expire(authToken,1, TimeUnit.HOURS);
                     }
                 }
                 chain.doFilter(request, response);
@@ -84,7 +84,7 @@ public class AuthFilter extends OncePerRequestFilter {
                 if(o != null){
                     //redis中token对应的用户信息(用户id)存在,说明token未过期
                     //刷新token和用户信息的缓存时间
-                    redisTemplate.expire(authToken,5*60, TimeUnit.SECONDS);
+                    redisTemplate.expire(authToken,1, TimeUnit.HOURS);
                 }else{
                     //token不存在或者已经过期
                     //跳转到登录页面
