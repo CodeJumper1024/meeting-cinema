@@ -57,7 +57,7 @@ public class AuthController {
             UserInfoVo userInfo = userServiceAPI.getUserInfoByName(authRequest.getUserName());
             Integer uuid = userInfo.getUuid();
             //将token和用户信息保存到redis 设置token在redis的保存时间为5分钟
-            redisTemplate.opsForValue().set(token,uuid);
+            redisTemplate.opsForValue().set(token,uuid+"");
             redisTemplate.expire(token,5*60, TimeUnit.SECONDS);
 
             //将token和randomkey返回给前端

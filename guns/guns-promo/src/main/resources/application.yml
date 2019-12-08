@@ -40,6 +40,26 @@ spring:
       username: root
       password: 123456
       filters: log4j,wall,mergeStat
+  redis:
+    host: 127.0.0.1
+    password:
+    port: 6379
+    jedis:
+      pool:
+        max-active: 200
+        max-idle: 20
+        min-idle: 0
+        max-wait: -1
+    timeout: 10000
+    database: 0
+
+mq:
+  nameserver:
+    addr: localhost:9876
+  topic: stock
+  producergroup: producer_group
+  consumergroup: consumer_group
+  transactionproducergroup: transaction_group
 
 logging:
   level.root: info

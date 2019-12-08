@@ -105,7 +105,11 @@ public class UserController {
         String requestHeader = request.getHeader(jwtProperties.getHeader());
         String token = requestHeader.substring(7);
         Object o = redisTemplate.opsForValue().get(token);
-        if (o == null) return baseReqVo;
+        if (o == null) {
+            baseReqVo.setStatus(0);
+            baseReqVo.setMsg("成功退出");
+            return baseReqVo;
+        }
         Boolean delete = redisTemplate.delete(token);
         if (delete) {
             //token删除成功
