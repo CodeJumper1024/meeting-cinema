@@ -50,7 +50,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Boolean isTrueSeats(String fieldId, String seatId) {
         int hallId = mtimeFieldTMapper.selectHallIdById(fieldId);
-        String uri = "http://localhost:1818/" + mtimeHallDictTMapper.selectJsonById(hallId);
+        String uri = "http://192.168.4.65:1818/" + mtimeHallDictTMapper.selectJsonById(hallId);
         String input = ConnectionUtils.readFileToString(uri);
         JSONObject jsonObject = JSONObject.parseObject(input);
         String idsString = jsonObject.getString("ids");

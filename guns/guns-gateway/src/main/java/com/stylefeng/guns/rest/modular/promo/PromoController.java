@@ -67,6 +67,7 @@ public class PromoController {
         }else {
             baseReqVo = promoService.getPromo(pageSize, nowPage);
         }
+        System.out.println(1);
         return baseReqVo;
     }
 

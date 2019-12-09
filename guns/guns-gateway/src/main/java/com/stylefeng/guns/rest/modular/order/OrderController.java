@@ -90,7 +90,7 @@ public class OrderController {
         BaseReqVo baseReqVo = alipayService.getPayInfo(orderId);
         //int serverPort = request.getServerPort();
         int localPort = request.getLocalPort();
-        String imgPre = "http://localhost:"  +  localPort + "/";
+        String imgPre = "http://192.168.4.65:"  +  localPort + "/";
         baseReqVo.setImgPre(imgPre);
         return baseReqVo;
     }

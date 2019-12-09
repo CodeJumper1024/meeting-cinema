@@ -42,7 +42,7 @@ public class OrderProducer {
 
     public Boolean cancleUnpaidOrder(String orderId){
         Message message = new Message(topic, JSON.toJSONString(orderId).getBytes(Charset.forName("utf-8")));
-        message.setDelayTimeLevel(7);
+        message.setDelayTimeLevel(5);
         SendResult sendResult = null;
         try {
             sendResult = producer.send(message);

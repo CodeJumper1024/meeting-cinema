@@ -4,7 +4,10 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.stylefeng.guns.rest.BaseReqVo;
 import com.stylefeng.guns.rest.film.FilmService;
 import com.stylefeng.guns.rest.film.vo.*;
+import com.stylefeng.guns.rest.modular.cache.CacheService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +21,18 @@ import java.util.List;
 @RequestMapping(value = "/film")
 @Slf4j
 public class FilmController {
+
+    public static final String FILM_INDEX_VO = "film_index_vo";
+
+    public static final String CACHE_INDEX_VO = "cache_index_vo";
+
+    @Autowired
+    RedisTemplate redisTemplate;
+
+    @Autowired
+    CacheService cacheService;
+
+
     private static final String IMG_PRE = "http://img.meetingshop.cn/";
 
     @Reference(interfaceClass = FilmService.class, check = false)
@@ -69,6 +84,21 @@ public class FilmController {
     @RequestMapping(value = "/getIndex")
     public BaseReqVo getIndex(){
         BaseReqVo<Object> reqVo = new BaseReqVo<>();
+        //从本地缓存获取indexVo
+        BaseReqVo cacheReqVo = (BaseReqVo)cacheService.get(CACHE_INDEX_VO);
+        if (cacheReqVo != null){
+            System.out.println("cache");
+            reqVo = cacheReqVo;
+            return reqVo;
+        }
+        //从redis缓存中获取indexVo
+        BaseReqVo redisReqVo = (BaseReqVo)redisTemplate.opsForValue().get(FILM_INDEX_VO);
+        if (redisReqVo != null){
+            System.out.println("redis");
+            cacheService.put(CACHE_INDEX_VO, redisReqVo);
+            reqVo = redisReqVo;
+            return reqVo;
+        }
         try {
             FilmIndexVo filmIndexVo = new FilmIndexVo();
             List<BannerVo> banners = filmService.getBanner();
@@ -89,6 +119,7 @@ public class FilmController {
         }catch (Exception e){
             return BaseReqVo.queryFail();
         }
+        redisTemplate.opsForValue().set(FILM_INDEX_VO, reqVo);
         return reqVo;
     }
     @RequestMapping(value = "/getConditionList")

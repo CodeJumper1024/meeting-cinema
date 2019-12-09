@@ -55,13 +55,15 @@ public class OrderConsumer {
                 String stringBody = new String(body);
                 String orderId = JSON.parseObject(stringBody, String.class);
                 log.info("收到消息，orderId:{}",orderId);
-                //根据消息去删除指定订单
-                EntityWrapper<MoocOrderT> orderTEntityWrapper = new EntityWrapper<>();
                 if (orderId == null){
                     return ConsumeConcurrentlyStatus.RECONSUME_LATER;
                 }
+                //根据消息去删除指定订单
+                EntityWrapper<MoocOrderT> orderTEntityWrapper = new EntityWrapper<>();
                 orderTEntityWrapper.eq("UUID", orderId);
-                Integer num = moocOrderTMapper.delete(orderTEntityWrapper);
+                MoocOrderT moocOrderT = new MoocOrderT();
+                moocOrderT.setOrderStatus(2);
+                Integer num = moocOrderTMapper.update(moocOrderT, orderTEntityWrapper);
                 if (num < 1){
                     log.info("删除失效订单失败");
                     return ConsumeConcurrentlyStatus.RECONSUME_LATER;
